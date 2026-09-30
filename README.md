@@ -31,6 +31,15 @@ chezmoi apply
 once and keeps them out of the repo. `CONTEXT.md` covers the non-obvious
 parts.
 
+## How work on selvage runs
+
+Selvage is a [suede](https://github.com/taurean/suede) project with no runtime
+stack: it uses suede's process layer (task pipeline, git workflow, semver
+releases, decision graph) to manage its own changes. The process skills and
+reviewer agents live in `.claude/` at the repo root. They load only when Claude
+Code runs inside selvage and never deploy to `~/.claude`. `CLAUDE.md` has the
+rules.
+
 ## Credits
 
 [Matt Pocock's skills](https://github.com/mattpocock/skills) are a significant
