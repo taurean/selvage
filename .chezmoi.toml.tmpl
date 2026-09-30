@@ -1,0 +1,8 @@
+# Rendered to ~/.config/chezmoi/chezmoi.toml by `chezmoi init`. Default (copy)
+# mode: targets are regular files, written only by `chezmoi apply`.
+sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+# Machine-local values. Asked once by `chezmoi init`, stored only in the
+# rendered config, never in this repo.
+[data]
+onePasswordAccount = {{ promptStringOnce . "onePasswordAccount" "1Password account address" | quote }}

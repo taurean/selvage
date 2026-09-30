@@ -1,0 +1,2 @@
+prefix=/Users/taurean/.npm-global
+//registry.npmjs.org/:_authToken=${NPM_TOKEN}

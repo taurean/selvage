@@ -1,0 +1,7 @@
+# Selvage-managed. Source: ~/Developer/selvage/dot_zshrc
+# Edit the repo file, then `chezmoi apply`. Edits made here are overwritten.
+
+for _f in "${HOME}/.zshrc.d/"*.zsh; do
+  source "$_f"
+done
+unset _f

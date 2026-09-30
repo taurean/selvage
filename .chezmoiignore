@@ -1,0 +1,22 @@
+# Repo docs. Patterns match target paths, and `*` does not cross `/`, so this
+# covers only top-level markdown: .claude/CLAUDE.md and every SKILL.md still
+# deploy.
+*.md
+
+# Skills other tools install into ~/.claude/skills at runtime. Ignoring them
+# keeps the exact_ directory from deleting them on apply. synced/ is Claude.ai
+# skill sync; reflect-* are written and updated by the Reflect app (their
+# SKILL.md carries a reflect-managed hash).
+.claude/skills/synced
+.claude/skills/synced/**
+.claude/skills/reflect-*
+.claude/skills/reflect-*/**
+# ...except reflect-notes, which is selvage's own skill. Last match wins, so
+# these negations must stay below the reflect-* lines.
+!.claude/skills/reflect-notes
+!.claude/skills/reflect-notes/**
+
+# Scratch ([S4]). .gitignore and .chezmoiignore are independent: without this,
+# tmp/ would deploy to ~/tmp/.
+tmp
+tmp/**
