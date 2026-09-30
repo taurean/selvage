@@ -1,0 +1,10 @@
+{
+	"name": "selvage",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Personal dotfiles and Claude Code configuration, managed with chezmoi",
+	"suede": {
+		"from": "2026.9.30.1",
+		"versioning": "semver"
+	}
+}

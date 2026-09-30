@@ -51,6 +51,22 @@ chezmoi apply
 
 ---
 
+## Suede process layer
+
+**Two `.claude` directories, two scopes.** `dot_claude/` is source for `~/.claude/` and applies everywhere. `.claude/` at the repo root is selvage's project config: the `task`, `project-plan`, and `review` skills, the three reviewer agents, and whatever `deciduous` writes. chezmoi ignores source entries whose names start with `.` (other than `.chezmoi*`), so the root `.claude/` never deploys and needs no `.chezmoiignore` entry. Verified against chezmoi 2.65 on 2026-09-30.
+
+**Why the process skills are repo-local.** `review`, `task`, and `project-plan` are also the names of every suede project's skills. As personal skills they would shadow those in every project ([S6]). Repo-local, they apply only inside selvage and shadow nothing.
+
+**`package.json` would deploy without its ignore entry.** It is not dot-prefixed, so chezmoi treats it as a target (`~/package.json`) unless `.chezmoiignore` lists it. The same goes for `pnpm-lock.yaml` and `node_modules`, which `suede task` produces by running `pnpm install` in each new worktree. The lockfile is committed so worktrees start clean.
+
+**chezmoi reads the main checkout, not the worktree.** The rendered config's `sourceDir` is the main checkout, so a bare `chezmoi diff` in a task worktree shows `main`'s state. Pass `--source .` to check the branch. Never `apply` from a worktree: the target would take the unmerged branch's files.
+
+**Worktrees land in `~/Developer/`.** Selvage stays at `~/Developer/selvage` rather than suede's `~/Developer/<name>/main` container, so `suede task feat/x` creates `~/Developer/feat-x`. Moving to the container layout means re-running `chezmoi init --source ~/Developer/selvage/main`.
+
+**`deciduous init` has not run yet.** It must run once in the main checkout on the Mac. It writes hooks to `.claude/settings.json`, which is allowed at the repo root only because it carries no `permissions` ([S8]).
+
+---
+
 ## Permission policy
 
 The policy lives in `permissions` in `dot_claude/settings.json`. It was ported from `@gotgenes/pi-permission-system` on 2026-09-09; the rule syntax is entirely different but the reasoning below carried over.
