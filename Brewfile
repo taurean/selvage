@@ -3,7 +3,6 @@
 
 # Terminal & shell
 cask "wezterm"
-brew "tmux"
 
 # Editor
 brew "neovim"

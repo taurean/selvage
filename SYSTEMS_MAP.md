@@ -7,7 +7,7 @@ A reader should be able to use this file to decide which small part of selvage i
 ### Chezmoi source layer
 
 For: How selvage's source-tree files are deployed to their targets in the home directory, and what gets run once on first apply.
-Lives at: `.chezmoi.toml.tmpl`, `.chezmoiignore`, `Brewfile`
+Lives at: `.chezmoi.toml.tmpl`, `.chezmoiignore`, `.chezmoiremove`, `Brewfile`
 Why this shape: chezmoi runs in its default copy mode — targets are regular files and change only on `chezmoi apply`. The config template records `sourceDir` so the repo lives at `~/Developer/selvage`. The `dot_` and `exact_` prefixes apply at every depth, and top-level `*.md` files are excluded by `.chezmoiignore`. These are deployment concerns, not application concerns.
 Seams: `Brewfile` is the extension point for system packages — brew-formula changes land here, not in a dotfile. `.chezmoiignore` is where a target path that some tool writes at runtime gets excluded (the `synced` skills entry is the worked example).
 Fragile: (1) Targets drift when a tool writes them directly; `chezmoi diff` shows it, and apply overwrites it unless it was `re-add`ed first. (2) The three `exact_` directories delete anything not in source on apply, so a runtime-written path inside them must be in `.chezmoiignore`. (3) A broken symlink anywhere in the source tree hard-fails every chezmoi command with an error naming an unrelated path. `CONTEXT.md` documents all three.
@@ -15,18 +15,18 @@ Fragile: (1) Targets drift when a tool writes them directly; `chezmoi diff` show
 ### Shell environment
 
 For: The interactive shell session itself — zsh startup, language managers on PATH, git/ssh/npm identities, prompt, and secret resolution.
-Lives at: `dot_zshrc` (sources `~/.zshrc.d/*.zsh`); `dot_zshrc.d/init.zsh` (pyenv/rbenv), `path.zsh`, `prompt.zsh`, `aliases.zsh`, `tmux.zsh`, `secrets.zsh`; `dot_gitconfig`, `dot_ssh/config`, `dot_npmrc`, `dot_config/git/ignore`
-Why this shape: `dot_zshrc` is intentionally a one-liner that fans out to `dot_zshrc.d/*.zsh`. Each `.zsh` file is a self-contained concern (init order, path, prompt, aliases, tmux wrapper, secrets) and is independently editable. Adding a new shell concern = adding a new file in `dot_zshrc.d/`, not editing the existing ones.
-Seams: `dot_zshrc.d/secrets.zsh` is the canonical entry point for new secrets — its `_load_secret` helper is the pattern for "fetch from 1Password, cache, share with future tmux panes via `tmux set-environment -g`." Any new secret should reuse it, not invent a parallel mechanism.
+Lives at: `dot_zshrc` (sources `~/.zshrc.d/*.zsh`); `dot_zshrc.d/init.zsh` (pyenv/rbenv), `path.zsh`, `prompt.zsh`, `aliases.zsh`, `secrets.zsh`; `dot_gitconfig`, `dot_ssh/config`, `dot_npmrc`, `dot_config/git/ignore`
+Why this shape: `dot_zshrc` is intentionally a one-liner that fans out to `dot_zshrc.d/*.zsh`. Each `.zsh` file is a self-contained concern (init order, path, prompt, aliases, secrets) and is independently editable. Adding a new shell concern = adding a new file in `dot_zshrc.d/`, not editing the existing ones.
+Seams: `dot_zshrc.d/secrets.zsh` is the canonical entry point for new secrets — its `_load_secret` helper is the pattern for "fetch from 1Password on first use, export into this shell." Nothing fetches at startup: `NPM_TOKEN` loads through the `npm`/`npx`/`pnpm` wrappers, the rest through `load-secrets`. Any new secret should reuse the helper and join `load-secrets` (or get its own tool wrapper), not invent a parallel mechanism or fetch at startup.
 Fragile: 1Password CLI must be invoked with `--account` (the address comes from the machine-local `onePasswordAccount` chezmoi value); without it, `op` errors when multiple accounts are configured, and the `2>/dev/null` in `_load_secret` can swallow that error silently. `dot_zshrc.d/path.zsh` lists tool-managed paths at the end ("installer-appended; do not reorder") that depend on installer-set ordering and would break if reordered for cleanliness.
 
-### Terminal multiplexer and emulator
+### Terminal emulator
 
-For: The persistent shell workspace — wezterm drops you into a named tmux session that survives across terminal restarts.
-Lives at: `dot_config/tmux/tmux.conf`, `dot_config/wezterm/wezterm.lua`
-Why this shape: wezterm's `default_prog` launches `tmux attach -t selvage 2>/dev/null || tmux new -s selvage`, so the session name `selvage` is the contract between the two configs. A third touchpoint lives in the shell environment (`dot_zshrc.d/tmux.zsh` makes a bare `tmux` invocation start a session at `~/Developer`); all three sites must agree.
-Seams: `tmux.conf` binds tmux's mouse-menu entries and prefix menus to call `split-window -c "#{pane_current_path}"` so menu-driven creation inherits the current pane's directory (matching the keybind behaviour). New menu entries or new directory-aware bindings extend the existing pattern. The wezterm `default_prog` is the only place where the session-name contract lives — change the session name there, and `tmux.zsh` and any future wezterm changes have to follow.
-Fragile: tmux plugins are managed by `tpm` (last line of `tmux.conf`); plugin install/update happens interactively in tmux (`prefix + I`), not via chezmoi apply, so the plugins on disk and the manifest in `tmux.conf` can drift.
+For: The terminal window — wezterm opens a plain login zsh in `~/Developer`. No multiplexer.
+Lives at: `dot_config/wezterm/wezterm.lua`
+Why this shape: one file, wezterm defaults plus appearance, `default_cwd`, and a CMD-Click link binding.
+Seams: new keybindings and mouse bindings go in the returned table beside `mouse_bindings`.
+Fragile: tmux was removed in 0.2.0; `.chezmoiremove` deletes its old targets on apply. Drop those entries once every machine has applied past 0.2.0.
 
 ### Neovim editor
 

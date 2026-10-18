@@ -25,9 +25,9 @@ Run each check through the seam the story's user actually touches:
   absent from `chezmoi managed` and present in `.claude/`. Claude Code loads it
   only when cwd is selvage.
 - **Shell, terminal, or editor behavior** → `zsh -n` for syntax, `nvim
-  --headless +qa` for a clean start, `tmux -f <file> start-server \; kill-server`
-  for config parse. Behavior beyond parsing (a prompt, a keybinding) is observed
-  on the Mac after apply and listed as a post-merge check.
+  --headless +qa` for a clean start. Behavior beyond parsing (a prompt, a
+  keybinding) is observed on the Mac after apply and listed as a post-merge
+  check.
 
 ## What runs when
 
