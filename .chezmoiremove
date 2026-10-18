@@ -1,0 +1,6 @@
+# Targets of files removed from source. chezmoi doesn't delete a target when its
+# source file goes away, and ~/.zshrc sources every ~/.zshrc.d/*.zsh, so a stale
+# tmux.zsh would keep loading. Drop these entries once every machine has applied
+# past 0.2.0.
+.zshrc.d/tmux.zsh
+.config/tmux/tmux.conf

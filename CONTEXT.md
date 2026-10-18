@@ -111,7 +111,9 @@ The Pi permission package had several tokenizer-level gotchas (path tokens extra
 
 ## Secrets
 
-**npm token.** `~/.npmrc` references `${NPM_TOKEN}` as an env var, not a raw token. The token is injected at shell startup via `dot_zshrc.d/secrets.zsh`, which calls `op read` from the `Private` vault in 1Password.
+**npm token.** `~/.npmrc` references `${NPM_TOKEN}` as an env var, not a raw token. `dot_zshrc.d/secrets.zsh` wraps `npm`, `npx`, and `pnpm` so the first call in a shell runs `op read` from the `Private` vault in 1Password and exports the token. Nothing fetches at shell startup; `BRAVE_API_KEY` and `DEEPGRAM_API_KEY` load only through `load-secrets`.
+
+**Symptom:** a terminal opened to run a script (the Stardew Valley SMAPI launcher's `/tmp/open-smapi-terminal.command`) never runs it. **Cause:** a 1Password prompt at shell startup blocks the shell, and the launcher deletes the script after 10 seconds. **Fix:** never call `op` at startup; load secrets on first use, as `secrets.zsh` does.
 
 **`op read` requires `--account` when multiple accounts are configured.** Without it, `op` errors with "multiple accounts found" — silently if `2>/dev/null` is set. Always pin the account explicitly. The account address is machine-local chezmoi data (`onePasswordAccount`, asked once by `chezmoi init` and stored in `~/.config/chezmoi/chezmoi.toml`), so it never enters the repo; `dot_zshrc.d/secrets.zsh.tmpl` reads it:
 
