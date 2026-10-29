@@ -9,6 +9,9 @@ brew "gh"
 # Terminal & shell
 cask "wezterm"
 
+# AI coding agents. claude comes from Claude Code's native installer instead.
+brew "anomalyco/tap/opencode"
+
 # Editor
 brew "neovim"
 brew "tree-sitter-cli"
