@@ -40,12 +40,17 @@ from the path; it is a chezmoi convention). Projects built from
 
 ## Setting it up as dotfiles
 
+Install [Homebrew](https://brew.sh), then:
+
 ```sh
+brew install chezmoi
 git clone https://github.com/taurean/selvage.git ~/Developer/selvage
 chezmoi init --source ~/Developer/selvage
 chezmoi diff
 chezmoi apply
 ```
+
+`chezmoi apply` also installs everything in the `Brewfile`.
 
 `chezmoi init` asks for machine-local values (a 1Password account address)
 once and keeps them out of the repo. `CONTEXT.md` covers the non-obvious

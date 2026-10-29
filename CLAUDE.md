@@ -96,9 +96,11 @@ permission policy, in `dot_claude/settings.json`. Selvage has no root
 not carry `permissions`: rules there apply only when cwd is selvage — wrong
 scope for universal policy. Per-project rules belong in the project that needs them.
 
-**[S9] `Brewfile` is reference only.** Its header says manual, one-at-a-time
-install; `brew bundle install` is for VM dry-runs. Adding an entry won't install
-it on the live machine.
+**[S9] The `Brewfile` installs on apply, and only adds.** A
+`run_onchange_before_` script runs `brew bundle install --no-upgrade` against
+the source `Brewfile` whenever the file changes, before any dotfile is written.
+Adding an entry installs it on the next apply. Removing one uninstalls nothing,
+and apply never upgrades. The `Brewfile` itself never deploys.
 
 **[S11] Suede project files never deploy.** `package.json`, `pnpm-lock.yaml`,
 and `node_modules` are in `.chezmoiignore`; without those entries they land in

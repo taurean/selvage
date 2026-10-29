@@ -22,14 +22,21 @@ Non-obvious constraints, caveats, and decisions. Anything derivable from reading
 
 **Symptom:** `chezmoi apply` prompts that a target "has changed since chezmoi last wrote it." **Cause:** something wrote the target directly — Claude Code saving preferences to `~/.claude/settings.json`, or an installer appending a PATH line to `~/.zshrc` (Hermes did this in 2026-07). **Fix:** run `chezmoi diff <target>` and decide. Keep it with `chezmoi re-add <target>`, or move it where it belongs (PATH lines go in `dot_zshrc.d/path.zsh`, not the `dot_zshrc` fan-out) and let apply overwrite the target.
 
-**Bootstrap on a new machine:**
+**Bootstrap on a new machine:** install [Homebrew](https://brew.sh) first; it is the one manual install. Then:
 
 ```sh
+/opt/homebrew/bin/brew install chezmoi
 git clone git@github.com:taurean/selvage.git ~/Developer/selvage
 chezmoi init --source ~/Developer/selvage   # asks for the 1Password account address once
 chezmoi diff
-chezmoi apply
+chezmoi apply                               # also installs the Brewfile
 ```
+
+**Apply runs scripts from `.chezmoiscripts/`.** chezmoi runs `run_onchange_before_*` before writing any target and `run_onchange_after_*` once every target is written, each group in filename order. A `run_onchange_` script re-runs only when its *rendered* text changes, so a script that acts on a file embeds that file's hash (`{{ include "Brewfile" | sha256sum }}`); without it, editing the file never re-runs the script. Scripts run with `/opt/homebrew/bin` hard-coded, as `path.zsh` already is: Apple Silicon only.
+
+**Symptom:** `chezmoi apply` stops in the brew script with `It seems there is already an App at '/Applications/<App>.app'`. **Cause:** a `Brewfile` cask whose app was installed outside Homebrew (WezTerm, on the current Mac). **Fix:** `brew install --cask --adopt <cask>` once, then apply again.
+
+**`.chezmoiignore` beats `.chezmoiremove`.** An ignored path is never removed, so `.chezmoiremove` can't clean up a target whose source moved into `.chezmoiignore`. Verified against chezmoi 2.70.5 on 2026-10-29. `~/Brewfile`, deployed until 1.0.0, had to be deleted by hand.
 
 **Migrating a machine that ran symlink mode:** `chezmoi init --source ~/Developer/selvage` rewrites the config without `mode = "symlink"`, then `chezmoi diff` and `chezmoi apply` replace every file symlink and the three `~/.claude` directory symlinks with real files and directories. Apply does not write through the old symlinks into the repo. `~/.local/share/chezmoi` is unused afterwards and can be removed.
 
