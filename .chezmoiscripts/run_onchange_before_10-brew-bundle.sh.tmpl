@@ -1,0 +1,18 @@
+#!/bin/bash
+# Installs the Brewfile's packages, before apply writes any dotfile. chezmoi
+# re-runs a run_onchange_ script only when its rendered text changes, and this
+# hash changes with the Brewfile:
+# Brewfile sha256: {{ include "Brewfile" | sha256sum }}
+#
+# Adds only. No --cleanup, so a package installed by hand stays and removing an
+# entry uninstalls nothing. --no-upgrade, so apply never moves an installed
+# version; upgrades are `brew upgrade`, run deliberately.
+set -euo pipefail
+
+brew=/opt/homebrew/bin/brew
+if [[ ! -x "$brew" ]]; then
+  echo "selvage: Homebrew not found at $brew. Install it from https://brew.sh, then re-run chezmoi apply." >&2
+  exit 1
+fi
+
+"$brew" bundle install --no-upgrade --file={{ joinPath .chezmoi.sourceDir "Brewfile" | quote }}

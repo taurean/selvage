@@ -40,12 +40,18 @@ from the path; it is a chezmoi convention). Projects built from
 
 ## Setting it up as dotfiles
 
+Install [Homebrew](https://brew.sh), then:
+
 ```sh
+brew install chezmoi
 git clone https://github.com/taurean/selvage.git ~/Developer/selvage
 chezmoi init --source ~/Developer/selvage
 chezmoi diff
 chezmoi apply
 ```
+
+`chezmoi apply` also installs everything in the `Brewfile`, then Node and the
+global JS tools in `dot_config/mise/config.toml`.
 
 `chezmoi init` asks for machine-local values (a 1Password account address)
 once and keeps them out of the repo. `CONTEXT.md` covers the non-obvious
@@ -55,7 +61,7 @@ parts.
 
 Selvage is a [suede](https://github.com/taurean/suede) project with no runtime
 stack: it uses suede's process layer (task pipeline, git workflow, semver
-releases, decision graph) to manage its own changes. The process skills and
+releases) to manage its own changes. The process skills and
 reviewer agents live in `.claude/` at the repo root. They load only when Claude
 Code runs inside selvage and never deploy to `~/.claude`. `CLAUDE.md` has the
 rules.

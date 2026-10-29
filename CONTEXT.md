@@ -22,14 +22,21 @@ Non-obvious constraints, caveats, and decisions. Anything derivable from reading
 
 **Symptom:** `chezmoi apply` prompts that a target "has changed since chezmoi last wrote it." **Cause:** something wrote the target directly — Claude Code saving preferences to `~/.claude/settings.json`, or an installer appending a PATH line to `~/.zshrc` (Hermes did this in 2026-07). **Fix:** run `chezmoi diff <target>` and decide. Keep it with `chezmoi re-add <target>`, or move it where it belongs (PATH lines go in `dot_zshrc.d/path.zsh`, not the `dot_zshrc` fan-out) and let apply overwrite the target.
 
-**Bootstrap on a new machine:**
+**Bootstrap on a new machine:** install [Homebrew](https://brew.sh) first; it is the one manual install. Then:
 
 ```sh
+/opt/homebrew/bin/brew install chezmoi
 git clone git@github.com:taurean/selvage.git ~/Developer/selvage
 chezmoi init --source ~/Developer/selvage   # asks for the 1Password account address once
 chezmoi diff
-chezmoi apply
+chezmoi apply                               # installs the Brewfile, then mise's tools
 ```
+
+**Apply runs scripts from `.chezmoiscripts/`.** chezmoi runs `run_onchange_before_*` before writing any target and `run_onchange_after_*` once every target is written, each group in filename order. A `run_onchange_` script re-runs only when its *rendered* text changes, so a script that acts on a file embeds that file's hash (`{{ include "Brewfile" | sha256sum }}`); without it, editing the file never re-runs the script. Scripts run with `/opt/homebrew/bin` hard-coded, as `path.zsh` already is: Apple Silicon only.
+
+**Symptom:** `chezmoi apply` stops in the brew script with `It seems there is already an App at '/Applications/<App>.app'`. **Cause:** a `Brewfile` cask whose app was installed outside Homebrew (WezTerm, on the current Mac). **Fix:** `brew install --cask --adopt <cask>` once, then apply again.
+
+**`.chezmoiignore` beats `.chezmoiremove`.** An ignored path is never removed, so `.chezmoiremove` can't clean up a target whose source moved into `.chezmoiignore`. Verified against chezmoi 2.70.5 on 2026-10-29. `~/Brewfile`, deployed until 1.0.0, had to be deleted by hand.
 
 **Migrating a machine that ran symlink mode:** `chezmoi init --source ~/Developer/selvage` rewrites the config without `mode = "symlink"`, then `chezmoi diff` and `chezmoi apply` replace every file symlink and the three `~/.claude` directory symlinks with real files and directories. Apply does not write through the old symlinks into the repo. `~/.local/share/chezmoi` is unused afterwards and can be removed.
 
@@ -53,7 +60,7 @@ chezmoi apply
 
 ## Suede process layer
 
-**Two `.claude` directories, two scopes.** `dot_claude/` is source for `~/.claude/` and applies everywhere. `.claude/` at the repo root is selvage's project config: the `task`, `project-plan`, and `review` skills, the three reviewer agents, and whatever `deciduous` writes. chezmoi ignores source entries whose names start with `.` (other than `.chezmoi*`), so the root `.claude/` never deploys and needs no `.chezmoiignore` entry. Verified against chezmoi 2.65 on 2026-09-30.
+**Two `.claude` directories, two scopes.** `dot_claude/` is source for `~/.claude/` and applies everywhere. `.claude/` at the repo root is selvage's project config: the `task`, `project-plan`, and `review` skills and the three reviewer agents. chezmoi ignores source entries whose names start with `.` (other than `.chezmoi*`), so the root `.claude/` never deploys and needs no `.chezmoiignore` entry. Verified against chezmoi 2.65 on 2026-09-30.
 
 **Why the process skills are repo-local.** `review`, `task`, and `project-plan` are also the names of every suede project's skills. As personal skills they would shadow those in every project ([S6]). Repo-local, they apply only inside selvage and shadow nothing.
 
@@ -62,8 +69,6 @@ chezmoi apply
 **chezmoi reads the main checkout, not the worktree.** The rendered config's `sourceDir` is the main checkout, so a bare `chezmoi diff` in a task worktree shows `main`'s state. Pass `--source .` to check the branch. Never `apply` from a worktree: the target would take the unmerged branch's files.
 
 **Worktrees land in `~/Developer/`.** Selvage stays at `~/Developer/selvage` rather than suede's `~/Developer/<name>/main` container, so `suede task feat/x` creates `~/Developer/feat-x`. Moving to the container layout means re-running `chezmoi init --source ~/Developer/selvage/main`.
-
-**`deciduous init` has not run yet.** It must run once in the main checkout on the Mac. It writes hooks to `.claude/settings.json`, which is allowed at the repo root only because it carries no `permissions` ([S8]).
 
 ---
 
@@ -106,6 +111,18 @@ The Pi layout was removed on 2026-09-09. `dot_agents/`, `dot_pi/`, and `PACKAGE_
 Both archives are local and untracked. They are the only copy of the vendor skills and the herdr hook. If you clear `tmp/`, those are gone for good; everything else is recoverable from git history.
 
 The Pi permission package had several tokenizer-level gotchas (path tokens extracted from quoted strings, compound-command decomposition, `<opaque-bash-wrapper>` handling) that were documented here at length. None of them apply to Claude Code, and the package is no longer installed, so they were removed with the rest of the Pi content. The archived `config.json` still carries the rules if the history is ever needed.
+
+---
+
+## JS toolchain
+
+**mise is the only owner of Node and global JS tools.** `dot_config/mise/config.toml` declares them, and `run_onchange_after_20-mise-install` runs `mise install` whenever that file changes. Nothing else installs them: `dot_npmrc` sets no `prefix`, so there is no npm global directory on PATH. `$PNPM_HOME` isn't set, so `pnpm add -g` refuses to run. Volta and corepack are gone. **Why:** until 1.0.0, four owners (Volta, npm's `~/.npm-global` prefix, pnpm globals, and corepack) each put shims on PATH, and PATH order picked the winner. On 2026-10-26 a stale corepack 0.32.0 in `~/.npm-global/bin` shadowed Volta's and broke `pnpm` (#3). Volta was the first choice for single owner but is unmaintained, and its maintainers point to mise (volta-cli/volta#2080).
+
+**Shims, not `mise activate`.** `path.zsh` puts `~/.local/share/mise/shims` on PATH. A shim resolves the tool version for the current directory on every call, so it works in non-interactive shells (scripts, Claude Code's Bash tool) where an activate hook never runs. Shims don't load a project's `[env]` or run its `cd`/`enter` hooks; a project that needs those needs `mise activate zsh`. `which node` prints the shim, while `mise which node` prints the real binary.
+
+**Project pins.** mise reads `.nvmrc`, `.node-version`, and `package.json` for Node, and `package.json` for pnpm, only because the global config turns on `idiomatic_version_file_enable_tools`. It's off by default. Without it, every project silently runs the global `node` and `pnpm`.
+
+**Global tools with a different owner.** `claude` comes from Claude Code's native installer (`~/.local/bin`, self-updating) and `opencode` from Homebrew. Neither belongs in the mise config. Add a global tool by editing the source config. `mise use -g` writes the deployed copy, which drifts until `chezmoi re-add` ([S10]).
 
 ---
 

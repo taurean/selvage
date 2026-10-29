@@ -40,4 +40,4 @@ Read the format file for the doc you're about to touch:
 - Create files lazily: the first real entry creates the doc. Never scaffold an
   empty doc or a placeholder section.
 - Decision records are not one of these docs. Projects that record decisions
-  bring their own tooling — deciduous, ADRs under `docs/adr/`, or nothing.
+  bring their own tooling — ADRs under `docs/adr/`, or nothing.

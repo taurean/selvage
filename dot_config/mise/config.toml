@@ -1,0 +1,15 @@
+# Node and every global JS tool. mise is their only owner (CONTEXT.md, "JS
+# toolchain"), and `chezmoi apply` runs `mise install` when this file changes.
+# Add a global tool here, in selvage. Not with `npm -g` or `pnpm add -g`, and
+# not with `mise use -g`, which edits the deployed copy instead.
+
+[settings]
+# Off by default. Lets a project pin Node with .nvmrc, .node-version, or
+# package.json, and pnpm with package.json, the way Volta and corepack did.
+idiomatic_version_file_enable_tools = ["node", "pnpm"]
+
+[tools]
+node = "24.22.0"
+pnpm = "latest"
+
+"npm:create-suede" = "latest"

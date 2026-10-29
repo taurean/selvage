@@ -1,0 +1,19 @@
+#!/bin/bash
+# Installs the tools in ~/.config/mise/config.toml. An after_ script, so apply
+# has written that config before this runs, and the brew script (a before_
+# script) has installed mise. Re-runs when the config changes:
+# mise config sha256: {{ include "dot_config/mise/config.toml" | sha256sum }}
+#
+# Adds only. A tool removed from the config stays installed until
+# `mise prune --tools`, run deliberately.
+set -euo pipefail
+
+mise=/opt/homebrew/bin/mise
+if [[ ! -x "$mise" ]]; then
+  echo "selvage: mise not found at $mise. The Brewfile installs it, so check the brew script's output above." >&2
+  exit 1
+fi
+
+# From $HOME, so only the global config applies, never a project's mise.toml.
+cd "$HOME"
+"$mise" install
