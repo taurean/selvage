@@ -55,7 +55,7 @@ parts.
 
 Selvage is a [suede](https://github.com/taurean/suede) project with no runtime
 stack: it uses suede's process layer (task pipeline, git workflow, semver
-releases, decision graph) to manage its own changes. The process skills and
+releases) to manage its own changes. The process skills and
 reviewer agents live in `.claude/` at the repo root. They load only when Claude
 Code runs inside selvage and never deploy to `~/.claude`. `CLAUDE.md` has the
 rules.

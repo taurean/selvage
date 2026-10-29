@@ -53,7 +53,7 @@ chezmoi apply
 
 ## Suede process layer
 
-**Two `.claude` directories, two scopes.** `dot_claude/` is source for `~/.claude/` and applies everywhere. `.claude/` at the repo root is selvage's project config: the `task`, `project-plan`, and `review` skills, the three reviewer agents, and whatever `deciduous` writes. chezmoi ignores source entries whose names start with `.` (other than `.chezmoi*`), so the root `.claude/` never deploys and needs no `.chezmoiignore` entry. Verified against chezmoi 2.65 on 2026-09-30.
+**Two `.claude` directories, two scopes.** `dot_claude/` is source for `~/.claude/` and applies everywhere. `.claude/` at the repo root is selvage's project config: the `task`, `project-plan`, and `review` skills and the three reviewer agents. chezmoi ignores source entries whose names start with `.` (other than `.chezmoi*`), so the root `.claude/` never deploys and needs no `.chezmoiignore` entry. Verified against chezmoi 2.65 on 2026-09-30.
 
 **Why the process skills are repo-local.** `review`, `task`, and `project-plan` are also the names of every suede project's skills. As personal skills they would shadow those in every project ([S6]). Repo-local, they apply only inside selvage and shadow nothing.
 
@@ -62,8 +62,6 @@ chezmoi apply
 **chezmoi reads the main checkout, not the worktree.** The rendered config's `sourceDir` is the main checkout, so a bare `chezmoi diff` in a task worktree shows `main`'s state. Pass `--source .` to check the branch. Never `apply` from a worktree: the target would take the unmerged branch's files.
 
 **Worktrees land in `~/Developer/`.** Selvage stays at `~/Developer/selvage` rather than suede's `~/Developer/<name>/main` container, so `suede task feat/x` creates `~/Developer/feat-x`. Moving to the container layout means re-running `chezmoi init --source ~/Developer/selvage/main`.
-
-**`deciduous init` has not run yet.** It must run once in the main checkout on the Mac. It writes hooks to `.claude/settings.json`, which is allowed at the repo root only because it carries no `permissions` ([S8]).
 
 ---
 

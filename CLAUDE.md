@@ -15,8 +15,9 @@ Claude Code skills and agents. Not a shipped application — no users, no tests,
 no CI in the conventional sense.
 
 **A suede project.** Selvage runs suede's process layer: the pipeline, git
-workflow, releases, and decision graph below, and the in-repo skills and agents
-under `.claude/`. It takes none of suede's runtime stack. `package.json` holds
+workflow, and releases below, and the in-repo skills and agents under
+`.claude/`. It takes none of suede's runtime stack and none of its decision
+graph. `package.json` holds
 the version and `"suede": { "from": "<tag>", "versioning": "semver" }`, which is
 also what lets `suede task`, `suede done`, and `suede release` find the project.
 
@@ -41,9 +42,8 @@ repo, never at a home-dir target.
 - `.claude/` at the repo root is selvage's own project config. chezmoi skips
   dot-prefixed source entries, so it never deploys; Claude Code loads it only
   when cwd is selvage or one of its worktrees. It holds the in-repo process
-  skills (`task`, `project-plan`, `review`), the reviewer agents
-  (`standards-reviewer`, `spec-reviewer`, `discipline-reviewer`), and what
-  `deciduous` writes.
+  skills (`task`, `project-plan`, `review`) and the reviewer agents
+  (`standards-reviewer`, `spec-reviewer`, `discipline-reviewer`).
 
 A skill that serves every project goes in `dot_claude/exact_skills/`. A skill
 that serves only work on selvage goes in `.claude/skills/`.
@@ -91,10 +91,10 @@ Don't paraphrase or "improve" them — treat changes as code, not as a personal
 blog.
 
 **[S8] Don't scope a permission override to selvage.** Selvage owns the global
-permission policy, in `dot_claude/settings.json`. The root
-`.claude/settings.json` exists for the hooks `deciduous` registers and must not
-carry `permissions`: rules there apply only when cwd is selvage — wrong scope
-for universal policy. Per-project rules belong in the project that needs them.
+permission policy, in `dot_claude/settings.json`. Selvage has no root
+`.claude/settings.json`. If one is ever added, for project hooks say, it must
+not carry `permissions`: rules there apply only when cwd is selvage — wrong
+scope for universal policy. Per-project rules belong in the project that needs them.
 
 **[S9] `Brewfile` is reference only.** Its header says manual, one-at-a-time
 install; `brew bundle install` is for VM dry-runs. Adding an entry won't install
@@ -104,7 +104,7 @@ it on the live machine.
 and `node_modules` are in `.chezmoiignore`; without those entries they land in
 `~/`. Any new top-level non-dot file that exists for the process layer, not the
 home directory, needs the same entry. Dot-prefixed entries (`.claude/`,
-`.deciduous/`, `.github/`) need none.
+`.github/`) need none.
 
 **[S10] Tools write their own config at runtime.** Claude Code rewrites
 `~/.claude/settings.json` when preferences change in the UI; installers append
@@ -188,7 +188,12 @@ a task, compress it but keep the shape.
 | 7. **Release**                                                    | "Releases" below   | Version bump as the final commit; human tags the merge commit    |
 
 Always on: `engineering-discipline` (personal skill, cited by rule ID in
-reviews), the decision graph, and the git workflow above.
+reviews) and the git workflow above.
+
+Suede's decision graph (`deciduous`) is not carried, so skip it when porting a
+newer suede process. Dropped in 1.0.0 (#5): `deciduous init` never ran here,
+and the graph existed only as process steps and an MCP server loaded into every
+session. PR descriptions and issues carry the reasoning.
 
 **Tracker.** GitHub Issues on `taurean/selvage`. `/project-plan` publishes the
 plan issue there and `/review` reads specs from PR bodies and issues.
@@ -224,30 +229,13 @@ Mechanics, from suede:
 1. Every branch ready to merge ships as its own version. No versionless merges.
 2. On the branch, clean tree: `suede release [patch|minor|major]` commits the
    bump as `chore(release): cut <version>`, the final commit. It doesn't push.
-3. In the release PR description, note whether the decision graph answered a
-   question this cycle.
-4. After the human merges: `suede release --tag` tags `main`'s merge commit with
+3. After the human merges: `suede release --tag` tags `main`'s merge commit with
    the bare version, annotated, and pushes only the tag.
-5. `git log <prev>..<new>` is the changelog. There is no `CHANGELOG.md`.
+4. `git log <prev>..<new>` is the changelog. There is no `CHANGELOG.md`.
 
 `package.json#suede.from` is the suede tag this process was taken from. When
 suede's process layer changes, port what applies and move `from` to the new tag
 in the same PR.
-
-## Decision graph
-
-Selvage tracks decisions with `deciduous`. Run `deciduous init` once in the main
-checkout on the Mac; it writes its own Decision Graph Workflow section into this
-file and its commands and hooks under `.claude/`. Don't hand-edit those, and
-don't restate them here.
-
-**Log in real time, not retroactively.** Once initialized, a pre-edit hook
-blocks an edit unless a goal or action node was logged recently.
-
-**The graph records the user's decisions, not the agent's process.** No nodes for
-reading, exploring, planning, or tool use. Nodes for goals, options, decisions,
-actions, outcomes, and observations that affect decisions. If it belongs on a
-timeline or in a PR description, log it.
 
 ## Guardrails
 

@@ -65,7 +65,7 @@ Fragile: A skill named the same as a project-level skill silently shadows it —
 For: How changes to selvage itself are planned, built, reviewed, and released — suede's process, without its runtime stack.
 Lives at: `.claude/skills/task/` (`SKILL.md`, `brief.md`, `testing.md`), `.claude/skills/project-plan/`, `.claude/skills/review/`, `.claude/agents/*-reviewer.md`, `package.json` (version and `suede` lineage), `pnpm-lock.yaml`, and the process sections of the root `CLAUDE.md`
 Why this shape: selvage is a suede project. Suede's process skills are copied in from the tag in `package.json#suede.from` and adapted where they assumed an app: verification is what chezmoi would write, and each user story gets one observable check instead of a scenario test. They sit in the repo-root `.claude/`, which chezmoi skips, so they apply only while working on selvage. `package.json` exists for `suede task`, `suede done`, and `suede release`, which find a project by `suede.from`.
-Seams: `testing.md` defines what counts as a check. Pulling a newer suede process means porting what applies and moving `suede.from` in the same PR. `deciduous init` adds its hooks and commands under `.claude/` once run.
+Seams: `testing.md` defines what counts as a check. Pulling a newer suede process means porting what applies and moving `suede.from` in the same PR; the decision graph is not carried (`CLAUDE.md`, "Process pipeline").
 Fragile: `package.json`, `pnpm-lock.yaml`, and `node_modules` deploy to `~/` unless `.chezmoiignore` lists them ([S11]). chezmoi's `sourceDir` is the main checkout, so checks in a worktree need `--source .`. The root `.claude/settings.json` must not carry `permissions` ([S8]).
 
 ### Project documentation and research notes
