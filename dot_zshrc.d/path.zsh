@@ -1,18 +1,11 @@
 # Base system paths
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/opt/homebrew/sbin"
 
-# Language managers: pyenv, rbenv, volta, go, rust, deno
-export PATH="$HOME/.pyenv/shims:$HOME/.rbenv/shims:$HOME/.volta/bin:/usr/local/go/bin:$HOME/.cargo/bin:$HOME/.deno/bin:$PATH"
-
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+# Language managers: pyenv, rbenv, mise (Node and global JS tools), go, rust, deno
+export PATH="$HOME/.pyenv/shims:$HOME/.rbenv/shims:$HOME/.local/share/mise/shims:/usr/local/go/bin:$HOME/.cargo/bin:$HOME/.deno/bin:$PATH"
 
 # Custom user bins
-export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # Tool-managed paths (installer-appended; do not reorder)
 export PATH="$HOME/.cache/lm-studio/bin:$PATH"

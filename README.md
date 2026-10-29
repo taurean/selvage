@@ -50,7 +50,8 @@ chezmoi diff
 chezmoi apply
 ```
 
-`chezmoi apply` also installs everything in the `Brewfile`.
+`chezmoi apply` also installs everything in the `Brewfile`, then Node and the
+global JS tools in `dot_config/mise/config.toml`.
 
 `chezmoi init` asks for machine-local values (a 1Password account address)
 once and keeps them out of the repo. `CONTEXT.md` covers the non-obvious

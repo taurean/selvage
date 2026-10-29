@@ -23,9 +23,8 @@ brew "git-lfs"
 # 1Password CLI (`op`)
 cask "1password-cli"
 
-# Language managers
+# Language managers. mise owns Node and global JS tools
+# (dot_config/mise/config.toml).
+brew "mise"
 brew "pyenv"
 brew "rbenv"
-
-# Note: Pi (AI coding assistant) is installed via pnpm, not brew:
-#   pnpm add -g pi

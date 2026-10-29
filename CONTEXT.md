@@ -29,7 +29,7 @@ Non-obvious constraints, caveats, and decisions. Anything derivable from reading
 git clone git@github.com:taurean/selvage.git ~/Developer/selvage
 chezmoi init --source ~/Developer/selvage   # asks for the 1Password account address once
 chezmoi diff
-chezmoi apply                               # also installs the Brewfile
+chezmoi apply                               # installs the Brewfile, then mise's tools
 ```
 
 **Apply runs scripts from `.chezmoiscripts/`.** chezmoi runs `run_onchange_before_*` before writing any target and `run_onchange_after_*` once every target is written, each group in filename order. A `run_onchange_` script re-runs only when its *rendered* text changes, so a script that acts on a file embeds that file's hash (`{{ include "Brewfile" | sha256sum }}`); without it, editing the file never re-runs the script. Scripts run with `/opt/homebrew/bin` hard-coded, as `path.zsh` already is: Apple Silicon only.
@@ -111,6 +111,18 @@ The Pi layout was removed on 2026-09-09. `dot_agents/`, `dot_pi/`, and `PACKAGE_
 Both archives are local and untracked. They are the only copy of the vendor skills and the herdr hook. If you clear `tmp/`, those are gone for good; everything else is recoverable from git history.
 
 The Pi permission package had several tokenizer-level gotchas (path tokens extracted from quoted strings, compound-command decomposition, `<opaque-bash-wrapper>` handling) that were documented here at length. None of them apply to Claude Code, and the package is no longer installed, so they were removed with the rest of the Pi content. The archived `config.json` still carries the rules if the history is ever needed.
+
+---
+
+## JS toolchain
+
+**mise is the only owner of Node and global JS tools.** `dot_config/mise/config.toml` declares them, and `run_onchange_after_20-mise-install` runs `mise install` whenever that file changes. Nothing else installs them: `dot_npmrc` sets no `prefix`, so there is no npm global directory on PATH. `$PNPM_HOME` isn't set, so `pnpm add -g` refuses to run. Volta and corepack are gone. **Why:** until 1.0.0, four owners (Volta, npm's `~/.npm-global` prefix, pnpm globals, and corepack) each put shims on PATH, and PATH order picked the winner. On 2026-10-26 a stale corepack 0.32.0 in `~/.npm-global/bin` shadowed Volta's and broke `pnpm` (#3). Volta was the first choice for single owner but is unmaintained, and its maintainers point to mise (volta-cli/volta#2080).
+
+**Shims, not `mise activate`.** `path.zsh` puts `~/.local/share/mise/shims` on PATH. A shim resolves the tool version for the current directory on every call, so it works in non-interactive shells (scripts, Claude Code's Bash tool) where an activate hook never runs. Shims don't load a project's `[env]` or run its `cd`/`enter` hooks; a project that needs those needs `mise activate zsh`. `which node` prints the shim, while `mise which node` prints the real binary.
+
+**Project pins.** mise reads `.nvmrc`, `.node-version`, and `package.json` for Node, and `package.json` for pnpm, only because the global config turns on `idiomatic_version_file_enable_tools`. It's off by default. Without it, every project silently runs the global `node` and `pnpm`.
+
+**Global tools with a different owner.** `claude` comes from Claude Code's native installer (`~/.local/bin`, self-updating) and `opencode` from Homebrew. Neither belongs in the mise config. Add a global tool by editing the source config. `mise use -g` writes the deployed copy, which drifts until `chezmoi re-add` ([S10]).
 
 ---
 
