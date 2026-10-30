@@ -38,6 +38,8 @@ chezmoi apply                               # installs the Brewfile, then mise's
 
 **`.chezmoiignore` beats `.chezmoiremove`.** An ignored path is never removed, so `.chezmoiremove` can't clean up a target whose source moved into `.chezmoiignore`. Verified against chezmoi 2.70.5 on 2026-10-29. `~/Brewfile`, deployed until 1.0.0, had to be deleted by hand.
 
+**`chezmoi managed` lists a `.chezmoiremove` entry while its target still exists.** After a source file is deleted and its target added to `.chezmoiremove`, `managed` keeps printing the target path until apply removes it; a target already gone is not listed. To check that nothing still deploys to a path, use `chezmoi managed --exclude=remove`; `--include=remove` lists the pending removals. Verified against chezmoi 2.70.5 on 2026-10-30.
+
 **Migrating a machine that ran symlink mode:** `chezmoi init --source ~/Developer/selvage` rewrites the config without `mode = "symlink"`, then `chezmoi diff` and `chezmoi apply` replace every file symlink and the three `~/.claude` directory symlinks with real files and directories. Apply does not write through the old symlinks into the repo. `~/.local/share/chezmoi` is unused afterwards and can be removed.
 
 ---
