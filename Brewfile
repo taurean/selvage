@@ -7,7 +7,6 @@ brew "chezmoi"
 brew "gh"
 
 # Terminal & shell
-cask "wezterm"
 cask "ghostty"
 cask "font-monaspace"
 

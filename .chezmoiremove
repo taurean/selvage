@@ -4,3 +4,7 @@
 # past 0.2.0.
 .zshrc.d/tmux.zsh
 .config/tmux/tmux.conf
+
+# Ghostty replaced WezTerm in 1.1.0 and WezTerm's config left source in 1.1.1.
+# Drop this entry once every machine has applied past 1.1.1.
+.config/wezterm/wezterm.lua
