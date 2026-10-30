@@ -10,6 +10,14 @@
 set -uo pipefail
 
 input=$(cat)
+
+# jq ships with macOS 15 and later. Without it every field reads empty, so say
+# so instead of printing a blank line.
+if ! command -v jq >/dev/null; then
+  echo "statusline: jq not found"
+  exit 0
+fi
+
 field() { jq -r "$1 // empty" <<<"$input"; }
 
 dir=$(field '.workspace.current_dir')
