@@ -16,7 +16,9 @@ Run each check through the seam the story's user actually touches:
 
 - **A file reaches (or leaves) its target** → `chezmoi managed`,
   `chezmoi diff`, and `chezmoi cat <target>` show what apply would write. A
-  target that should not deploy is absent from `chezmoi managed`.
+  target that should not deploy is absent from `chezmoi managed
+  --exclude=remove`; a target in `.chezmoiremove` stays in plain `managed`
+  until apply deletes it.
 - **Claude Code picks up a skill, command, agent, or setting** → the rendered
   file under its target path (`chezmoi cat ~/.claude/skills/<name>/SKILL.md`),
   with frontmatter that parses. A skill with `disable-model-invocation: true`

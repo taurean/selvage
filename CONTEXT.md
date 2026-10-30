@@ -34,9 +34,11 @@ chezmoi apply                               # installs the Brewfile, then mise's
 
 **Apply runs scripts from `.chezmoiscripts/`.** chezmoi runs `run_onchange_before_*` before writing any target and `run_onchange_after_*` once every target is written, each group in filename order. A `run_onchange_` script re-runs only when its *rendered* text changes, so a script that acts on a file embeds that file's hash (`{{ include "Brewfile" | sha256sum }}`); without it, editing the file never re-runs the script. Scripts run with `/opt/homebrew/bin` hard-coded, as `path.zsh` already is: Apple Silicon only.
 
-**Symptom:** `chezmoi apply` stops in the brew script with `It seems there is already an App at '/Applications/<App>.app'`. **Cause:** a `Brewfile` cask whose app was installed outside Homebrew (WezTerm, on the current Mac). **Fix:** `brew install --cask --adopt <cask>` once, then apply again.
+**Symptom:** `chezmoi apply` stops in the brew script with `It seems there is already an App at '/Applications/<App>.app'`. **Cause:** a `Brewfile` cask whose app was installed outside Homebrew (WezTerm hit this on the current Mac, before 1.1.1 removed it). **Fix:** `brew install --cask --adopt <cask>` once, then apply again.
 
 **`.chezmoiignore` beats `.chezmoiremove`.** An ignored path is never removed, so `.chezmoiremove` can't clean up a target whose source moved into `.chezmoiignore`. Verified against chezmoi 2.70.5 on 2026-10-29. `~/Brewfile`, deployed until 1.0.0, had to be deleted by hand.
+
+**`chezmoi managed` lists a `.chezmoiremove` entry while its target still exists.** After a source file is deleted and its target added to `.chezmoiremove`, `managed` keeps printing the target path until apply removes it; a target already gone is not listed. To check that nothing still deploys to a path, use `chezmoi managed --exclude=remove`; `--include=remove` lists the pending removals. Verified against chezmoi 2.70.5 on 2026-10-30.
 
 **Migrating a machine that ran symlink mode:** `chezmoi init --source ~/Developer/selvage` rewrites the config without `mode = "symlink"`, then `chezmoi diff` and `chezmoi apply` replace every file symlink and the three `~/.claude` directory symlinks with real files and directories. Apply does not write through the old symlinks into the repo. `~/.local/share/chezmoi` is unused afterwards and can be removed.
 

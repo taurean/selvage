@@ -22,11 +22,11 @@ Fragile: 1Password CLI must be invoked with `--account` (the address comes from 
 
 ### Terminal emulator
 
-For: The terminal window. Ghostty is the terminal; WezTerm's config stays until a separate removal task. Both open a plain login zsh in `~/Developer`. No multiplexer.
-Lives at: `dot_config/ghostty/config.tmpl`, `dot_config/ghostty/themes/flexoki-light`; `dot_config/wezterm/wezterm.lua`
+For: The terminal window. Ghostty opens a plain login zsh in `~/Developer`. No multiplexer.
+Lives at: `dot_config/ghostty/config.tmpl`, `dot_config/ghostty/themes/flexoki-light`
 Why this shape: one Ghostty config file plus one local theme. The template exists only for `{{ .chezmoi.homeDir }}` in `working-directory`. Ghostty picks Flexoki Light or Dark from macOS appearance, and Claude Code's ANSI theme inherits whichever palette is live.
-Seams: Ghostty options and keybindings go in `config.tmpl`; a local theme is a file in `dot_config/ghostty/themes/`. WezTerm bindings go in the returned table beside `mouse_bindings`.
-Fragile: `flexoki-light` differs from Ghostty's bundled Flexoki Light in palette 15 (ink, not base-200), because Claude Code's `dark-ansi` base draws text in `whiteBright`. Reverting that slot makes Claude Code text unreadable on the light background (see "Claude Code runtime config"). `Flexoki Dark` resolves by name from Ghostty's bundled set, so an upstream rename leaves it unresolved. tmux was removed in 0.2.0; `.chezmoiremove` deletes its old targets on apply. Drop those entries once every machine has applied past 0.2.0.
+Seams: Ghostty options and keybindings go in `config.tmpl`; a local theme is a file in `dot_config/ghostty/themes/`.
+Fragile: `flexoki-light` differs from Ghostty's bundled Flexoki Light in palette 15 (ink, not base-200), because Claude Code's `dark-ansi` base draws text in `whiteBright`. Reverting that slot makes Claude Code text unreadable on the light background (see "Claude Code runtime config"). `Flexoki Dark` resolves by name from Ghostty's bundled set, so an upstream rename leaves it unresolved. tmux was removed in 0.2.0 and WezTerm in 1.1.1; `.chezmoiremove` deletes their old targets on apply. Drop those entries once every machine has applied past the version that removed them.
 
 ### Neovim editor
 
