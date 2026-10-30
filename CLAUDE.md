@@ -69,9 +69,9 @@ root. `dot_claude/CLAUDE.md` and every `SKILL.md` deploy normally.
 load-bearing — delete when the content migrates into `CONTEXT.md` or a skill.
 Gitignored and chezmoiignored; a new scratch directory needs both.
 
-**[S5] Skills, agents, and commands are `exact_` directories.** On apply,
-chezmoi deletes anything in `~/.claude/skills`, `~/.claude/agents`, or
-`~/.claude/commands` that is not in selvage, so removing a skill here removes
+**[S5] Skills, agents, commands, and output styles are `exact_` directories.**
+On apply, chezmoi deletes anything in `~/.claude/skills`, `~/.claude/agents`,
+`~/.claude/commands`, or `~/.claude/output-styles` that is not in selvage, so removing a skill here removes
 it there. The survivors are what other tools install at runtime and
 `.chezmoiignore` excludes: `synced/` (Claude.ai skill sync) and `reflect-*`
 (the Reflect app, which rewrites them on update). A skill dropped into

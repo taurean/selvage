@@ -10,11 +10,11 @@ Non-obvious constraints, caveats, and decisions. Anything derivable from reading
 
 **Daily loop.** Edit selvage → `chezmoi diff` → `chezmoi apply`. To pull a change made at the target back into selvage: `chezmoi re-add <target>`. `chezmoi status` lists targets that differ from source in either direction.
 
-**`dot_` and `exact_` prefixes apply at every level.** A file named `.stylua.toml` inside a managed directory must be `dot_stylua.toml` in selvage. `dot_claude/exact_skills`, `exact_agents`, and `exact_commands` mark those three directories exact: apply deletes anything in the target that isn't in source.
+**`dot_` and `exact_` prefixes apply at every level.** A file named `.stylua.toml` inside a managed directory must be `dot_stylua.toml` in selvage. `dot_claude/exact_skills`, `exact_agents`, `exact_commands`, and `exact_output-styles` mark those four directories exact: apply deletes anything in the target that isn't in source.
 
 **`*.md` in `.chezmoiignore` matches top-level only.** Patterns match target paths and `*` does not cross `/`, so the repo docs are excluded while `.claude/CLAUDE.md` and every `SKILL.md` deploy. Verified against chezmoi 2.65 on 2026-09-30; the `!.claude/CLAUDE.md` negation that used to follow `*.md` was not needed and was removed.
 
-**Ignored entries survive in an exact directory.** Claude.ai skill sync writes `~/.claude/skills/synced/`, and the Reflect app writes `~/.claude/skills/reflect-<graph>/` (its `SKILL.md` carries a `reflect-managed` hash and the app rewrites it on update). `.chezmoiignore` excludes both, and chezmoi leaves ignored paths alone even inside `exact_skills`, so apply keeps them. Verified 2026-09-30. Anything else placed in those three directories by hand is deleted on the next apply. Don't copy a tool-managed skill into selvage: the tool keeps rewriting its own copy, so there would be two versions. The `reflect-*` pattern also matches selvage's own `reflect-notes`, so `.chezmoiignore` negates it below the pattern; a new selvage skill named `reflect-…` needs the same negation or it silently never deploys.
+**Ignored entries survive in an exact directory.** Claude.ai skill sync writes `~/.claude/skills/synced/`, and the Reflect app writes `~/.claude/skills/reflect-<graph>/` (its `SKILL.md` carries a `reflect-managed` hash and the app rewrites it on update). `.chezmoiignore` excludes both, and chezmoi leaves ignored paths alone even inside `exact_skills`, so apply keeps them. Verified 2026-09-30. Anything else placed in those four directories by hand is deleted on the next apply. Don't copy a tool-managed skill into selvage: the tool keeps rewriting its own copy, so there would be two versions. The `reflect-*` pattern also matches selvage's own `reflect-notes`, so `.chezmoiignore` negates it below the pattern; a new selvage skill named `reflect-…` needs the same negation or it silently never deploys.
 
 **`.gitignore` and `.chezmoiignore` are independent.** A path being gitignored says nothing about whether chezmoi manages it. `tmp/` is in both. Any new scratch or vendor directory needs the same treatment in both files.
 
@@ -44,7 +44,7 @@ chezmoi apply                               # installs the Brewfile, then mise's
 
 ## Claude Code
 
-**Config resolution.** Claude Code reads `~/.claude/CLAUDE.md` as the global instruction file, discovers skills from `~/.claude/skills/`, subagents from `~/.claude/agents/`, slash commands from `~/.claude/commands/`, and settings from `~/.claude/settings.json`. All five are deployed by `chezmoi apply` from `dot_claude/`.
+**Config resolution.** Claude Code reads `~/.claude/CLAUDE.md` as the global instruction file, discovers skills from `~/.claude/skills/`, subagents from `~/.claude/agents/`, slash commands from `~/.claude/commands/`, output styles from `~/.claude/output-styles/`, custom themes from `~/.claude/themes/`, and settings from `~/.claude/settings.json`. All seven are deployed by `chezmoi apply` from `dot_claude/`.
 
 **A skill edit reaches Claude Code only after apply.** Claude Code re-scans the three directories mid-session, so once applied, a new or changed skill, command, or agent is available without a restart.
 
@@ -55,6 +55,14 @@ chezmoi apply                               # installs the Brewfile, then mise's
 **Reference paths inside a skill must be skill-relative.** A skill that points at `~/.claude/skills/<name>/<file>.md` by absolute path breaks the moment the directory layout shifts, and breaks *silently* — the model simply fails to find the guide and improvises from training. Use `references/<file>.md` relative to the skill directory.
 
 **`~/.claude/settings.json` drifts from selvage when Claude Code writes it at runtime.** Changing model, theme, effort level, or enabled plugins in the UI rewrites the target. The drift is expected and shows in `chezmoi diff`. Keep the new values with `chezmoi re-add ~/.claude/settings.json`; an apply without that discards them.
+
+**`~/.claude/themes/` is not exact.** `/theme` writes a custom theme there when one is created ("New custom theme…") or edited (Ctrl+E). An `exact_` directory would delete UI-made themes on the next apply. Editing `flexoki` in the UI drifts its target like `settings.json` does; `re-add` it to keep the change.
+
+**Symptom:** Claude Code uses the Default output style although `settings.json` names another. **Cause:** `outputStyle` matches the style's frontmatter `name` exactly and case-sensitively (`Report First`, not `report-first`); a mismatch falls back to Default without an error. **Fix:** copy the `name` value from the style's frontmatter.
+
+**Symptom:** in Flexoki Light, Claude Code's body text or `!` entries are unreadable. **Cause:** the `flexoki` theme's `dark-ansi` base draws text in `whiteBright` and the `!` entry background in `black` (read from the preset in Claude Code 2.1.314). Ghostty's bundled Flexoki Light has `whiteBright` near the background. **Fix:** keep `dot_config/ghostty/themes/flexoki-light` palette 15 as ink (`#100f0f`) and the theme's `bashMessageBackgroundColor` override. Both halves are needed; neither works alone.
+
+**Symptom:** the status line reads `statusline: jq not found`. **Cause:** the script parses Claude Code's JSON with `jq`, which macOS ships at `/usr/bin/jq` from macOS 15. **Fix:** upgrade macOS or add `brew "jq"` to the `Brewfile`.
 
 ---
 
