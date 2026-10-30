@@ -1,0 +1,24 @@
+# ~/.config/ghostty/config
+# Selvage-managed. See ~/Developer/selvage/dot_config/ghostty/config.tmpl
+
+# Monaspace Argon for upright and italic. calt is Monaspace's texture healing;
+# liga stays off.
+font-family = Monaspace Argon
+font-family-italic = Monaspace Argon
+font-feature = calt
+font-feature = -liga
+font-size = 14
+adjust-cell-height = 20%
+
+window-padding-x = 16
+window-padding-y = 12
+
+# Follows macOS appearance. flexoki-light is a local copy of the bundled
+# Flexoki Light with whiteBright set to ink, so Claude Code's ANSI theme
+# (dark-ansi base, which draws text in whiteBright) reads on both backgrounds.
+theme = light:flexoki-light,dark:Flexoki Dark
+
+# Carried over from WezTerm: new windows start in the repos directory, and the
+# title bar is dropped.
+working-directory = {{ .chezmoi.homeDir }}/Developer
+macos-titlebar-style = hidden

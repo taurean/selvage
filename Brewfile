@@ -8,6 +8,8 @@ brew "gh"
 
 # Terminal & shell
 cask "wezterm"
+cask "ghostty"
+cask "font-monaspace"
 
 # AI coding agents. claude comes from Claude Code's native installer instead.
 brew "anomalyco/tap/opencode"

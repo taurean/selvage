@@ -6,10 +6,39 @@
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
-  "theme": "auto",
+  "theme": "custom:flexoki",
+  "outputStyle": "Report First",
+  "awaySummaryEnabled": false,
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
   "fileCheckpointingEnabled": false,
   "skipAutoPermissionPrompt": true,
   "agentPushNotifEnabled": true,
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt|elicitation_dialog|agent_needs_input",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Hero.aiff"
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "defaultMode": "auto",
     "deny": [
@@ -70,9 +99,9 @@
   },
   "enabledPlugins": {
     "commit-commands@claude-plugins-official": true,
-    "explanatory-output-style@claude-plugins-official": true,
+    "explanatory-output-style@claude-plugins-official": false,
     "feature-dev@claude-plugins-official": true,
-    "learning-output-style@claude-plugins-official": true,
+    "learning-output-style@claude-plugins-official": false,
     "security-guidance@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true
   }
