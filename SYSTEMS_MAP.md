@@ -22,11 +22,11 @@ Fragile: 1Password CLI must be invoked with `--account` (the address comes from 
 
 ### Terminal emulator
 
-For: The terminal window — wezterm opens a plain login zsh in `~/Developer`. No multiplexer.
-Lives at: `dot_config/wezterm/wezterm.lua`
-Why this shape: one file, wezterm defaults plus appearance, `default_cwd`, and a CMD-Click link binding.
-Seams: new keybindings and mouse bindings go in the returned table beside `mouse_bindings`.
-Fragile: tmux was removed in 0.2.0; `.chezmoiremove` deletes its old targets on apply. Drop those entries once every machine has applied past 0.2.0.
+For: The terminal window. Ghostty is the terminal; WezTerm's config stays until a separate removal task. Both open a plain login zsh in `~/Developer`. No multiplexer.
+Lives at: `dot_config/ghostty/config.tmpl`, `dot_config/ghostty/themes/flexoki-light`; `dot_config/wezterm/wezterm.lua`
+Why this shape: one Ghostty config file plus one local theme. The template exists only for `{{ .chezmoi.homeDir }}` in `working-directory`. Ghostty picks Flexoki Light or Dark from macOS appearance, and Claude Code's ANSI theme inherits whichever palette is live.
+Seams: Ghostty options and keybindings go in `config.tmpl`; a local theme is a file in `dot_config/ghostty/themes/`. WezTerm bindings go in the returned table beside `mouse_bindings`.
+Fragile: `flexoki-light` differs from Ghostty's bundled Flexoki Light in palette 15 (ink, not base-200), because Claude Code's `dark-ansi` base draws text in `whiteBright`. Reverting that slot makes Claude Code text unreadable on the light background (see "Claude Code runtime config"). `Flexoki Dark` resolves by name from Ghostty's bundled set, so an upstream rename leaves it unresolved. tmux was removed in 0.2.0; `.chezmoiremove` deletes its old targets on apply. Drop those entries once every machine has applied past 0.2.0.
 
 ### Neovim editor
 
@@ -38,11 +38,11 @@ Fragile: `dot_config/nvim/nvim-pack-lock.json` pins plugin versions and can drif
 
 ### Claude Code runtime config
 
-For: What Claude Code loads at startup — model, theme, plugins, and the permission policy that governs every project the agent runs in.
-Lives at: `dot_claude/settings.json`
+For: What Claude Code loads at startup — model, theme, output style, status line, hooks, plugins, and the permission policy that governs every project the agent runs in.
+Lives at: `dot_claude/settings.json`; `dot_claude/themes/flexoki.json`; `dot_claude/exact_output-styles/report-first.md`; `dot_claude/executable_statusline.sh`
 Why this shape: Claude Code reads `~/.claude/settings.json` on launch; this file owns machine-state choices (model, effort level, TUI mode, enabled plugins) alongside `permissions`. Because the path is global, whatever rules land here govern every project, not just selvage. Permission precedence is `deny` > `ask` > `allow` with no exception mechanism, which makes `deny` a statement about what must never run rather than a default you sometimes override.
-Seams: `permissions.ask` is the extension point for raising a recurring concern to a prompt — the 32 `gh` mutation rules are the worked example. `enabledPlugins` is the extension point for marketplace plugins, which is also where vendor skills belong now that `~/.claude/skills` is wholly owned by selvage.
-Fragile: Claude Code rewrites this file at runtime on any `/config` change; `chezmoi re-add ~/.claude/settings.json` keeps the change, and an apply without it discards the change ([S10]). Deny rules are per-tool, not tool-agnostic: a `Read` deny on `~/.ssh` does not stop `Bash(cat ~/.ssh/id_rsa)`. The `//` prefix in a path rule means absolute; a single `/` is cwd-relative and silently misses. Never scope a permission override to selvage itself ([S8]) — per-project rules belong in the project that needs them.
+Seams: `permissions.ask` is the extension point for raising a recurring concern to a prompt — the 32 `gh` mutation rules are the worked example. `enabledPlugins` is the extension point for marketplace plugins, which is also where vendor skills belong now that `~/.claude/skills` is wholly owned by selvage. `hooks` carries the sound cues: Glass on `Notification` for waiting states (`permission_prompt|elicitation_dialog|agent_needs_input`), Hero on `Stop`. A new output style is a file in `exact_output-styles/`, selected by its frontmatter `name`. `themes/` is deliberately not `exact_`: `/theme` writes custom themes there at runtime.
+Fragile: Claude Code rewrites this file at runtime on any `/config` change; `chezmoi re-add ~/.claude/settings.json` keeps the change, and an apply without it discards the change ([S10]). Deny rules are per-tool, not tool-agnostic: a `Read` deny on `~/.ssh` does not stop `Bash(cat ~/.ssh/id_rsa)`. `outputStyle` must equal the style's frontmatter `name` exactly (`Report First`), or Claude Code silently falls back to Default. The `flexoki` theme is half of a contract with Ghostty's `flexoki-light` palette 15 and with its own `bashMessageBackgroundColor` override; both exist because the `dark-ansi` base draws text in `whiteBright` and the `!` entry background in `black`. The statusline needs `jq`, which macOS 15+ ships at `/usr/bin/jq`. The `//` prefix in a path rule means absolute; a single `/` is cwd-relative and silently misses. Never scope a permission override to selvage itself ([S8]) — per-project rules belong in the project that needs them.
 
 ### Agent identity layer
 
