@@ -6,7 +6,7 @@
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
-  "theme": "custom:flexoki",
+  "theme": "auto",
   "outputStyle": "Report First",
   "awaySummaryEnabled": false,
   "statusLine": {

@@ -13,12 +13,17 @@ adjust-cell-height = 20%
 window-padding-x = 16
 window-padding-y = 12
 
-# Follows macOS appearance. flexoki-light is a local copy of the bundled
-# Flexoki Light with whiteBright set to ink, so Claude Code's ANSI theme
-# (dark-ansi base, which draws text in whiteBright) reads on both backgrounds.
-theme = light:flexoki-light,dark:Flexoki Dark
+# Follows macOS appearance. Both are local themes in themes/, written for the
+# P3 colorspace. usgc-highk sets white and whiteBright to the background, so
+# Claude Code must not use an ANSI theme; its "auto" theme reads the
+# background color and picks its own light or dark palette.
+theme = light:usgc-highk,dark:usgc-polyimide
+window-colorspace = display-p3
 
-# Carried over from WezTerm: new windows start in the repos directory, and the
-# title bar is dropped.
+# New windows start in the repos directory.
 working-directory = {{ .chezmoi.homeDir }}/Developer
-macos-titlebar-style = hidden
+
+# Transparent keeps the traffic lights and a draggable strip while the title
+# bar takes the window background. hidden removes both, leaving no way to move
+# the window with the mouse.
+macos-titlebar-style = transparent

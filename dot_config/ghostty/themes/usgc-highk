@@ -1,0 +1,27 @@
+# USGC-HIGHK theme for Ghostty
+# PN# 5200-010 - White scheme (Light mode)
+# High dielectric constant
+# Uses P3 colorspace - add "window-colorspace = display-p3" to main config
+
+background = #fefeff
+foreground = #262626
+cursor-color = #484747
+selection-background = #f6c443
+selection-foreground = #000000
+
+palette = 0=#262626
+palette = 1=#cd0400
+palette = 2=#f6c443
+palette = 3=#f6c443
+palette = 4=#6b40ef
+palette = 5=#ea3d8d
+palette = 6=#3477f6
+palette = 7=#ffffff
+palette = 8=#484747
+palette = 9=#cd0400
+palette = 10=#ebbc40
+palette = 11=#f6c443
+palette = 12=#ee7b3b
+palette = 13=#ea3d8d
+palette = 14=#3376f6
+palette = 15=#fefeff
