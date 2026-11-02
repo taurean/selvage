@@ -8,3 +8,11 @@
 # Ghostty replaced WezTerm in 1.1.0 and WezTerm's config left source in 1.1.1.
 # Drop this entry once every machine has applied past 1.1.1.
 .config/wezterm/wezterm.lua
+
+# Flexoki gave way to the usgc themes in 1.1.2. The Application Support config
+# is an unmanaged second Ghostty config that loads after ~/.config/ghostty/config
+# and overrode its theme; selvage's config is now the only one. Drop these
+# entries once every machine has applied past 1.1.2.
+.config/ghostty/themes/flexoki-light
+.claude/themes/flexoki.json
+Library/Application Support/com.mitchellh.ghostty/config
