@@ -8,3 +8,9 @@
 # Ghostty replaced WezTerm in 1.1.0 and WezTerm's config left source in 1.1.1.
 # Drop this entry once every machine has applied past 1.1.1.
 .config/wezterm/wezterm.lua
+
+# Ghostty also loads this macOS app-support config after ~/.config/ghostty, and
+# a stray theme line there overrode the Flexoki pair. All Ghostty settings live
+# in dot_config/ghostty/config.tmpl. Drop this entry once every machine has
+# applied past the release that adds it.
+Library/Application Support/com.mitchellh.ghostty/config
