@@ -104,5 +104,16 @@
     "learning-output-style@claude-plugins-official": false,
     "security-guidance@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true
-  }
+  },
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "Bash(git push origin main:*) — agents push branches and tags but never push directly to main; the human merges"
+    ]
+  },
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "voiceEnabled": true
 }
