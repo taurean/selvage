@@ -18,7 +18,12 @@ window-padding-y = 12
 # (dark-ansi base, which draws text in whiteBright) reads on both backgrounds.
 theme = light:flexoki-light,dark:Flexoki Dark
 
-# Carried over from WezTerm: new windows start in the repos directory, and the
-# title bar is dropped.
+# New windows start in the repos directory.
 working-directory = {{ .chezmoi.homeDir }}/Developer
-macos-titlebar-style = hidden
+
+# transparent keeps a draggable strip tinted to the theme. hidden removes it,
+# and every click then starts a selection, leaving no way to move the window.
+macos-titlebar-style = transparent
+
+# Wide-gamut color, so theme hex values render as specified on P3 displays.
+window-colorspace = display-p3
