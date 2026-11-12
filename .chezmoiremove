@@ -14,3 +14,9 @@
 # in dot_config/ghostty/config.tmpl. Drop this entry once every machine has
 # applied past the release that adds it.
 Library/Application Support/com.mitchellh.ghostty/config
+
+# Unmanaged usgc themes the app-support config pointed at. Flexoki is the only
+# Ghostty theme pair. Same drop condition as the entry above.
+.config/ghostty/themes/usgc-polyimide
+.config/ghostty/themes/usgc-highk
+.config/ghostty/themes/usgc-reticle-it
