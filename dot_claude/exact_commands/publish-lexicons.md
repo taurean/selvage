@@ -1,132 +1,64 @@
 ---
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
-description: Validate, fix, and publish AT Protocol lexicons to lexicon.garden registry. Args: 'validate' (default), 'update' (regenerate types), 'publish' (full publish).
+description: "Validate, regenerate types for, and publish AT Protocol lexicons to the lexicon.garden registry. Args: 'validate' (default), 'update' (regenerate types), 'publish' (full publish)."
+argument-hint: "validate | update | publish"
 ---
 
-You are a lexicon publishing assistant for AT Protocol lexicons. Your job is to help validate, fix, and publish custom lexicon schemas to lexicon.garden.
+Validate, regenerate types for, and publish this project's AT Protocol lexicons.
 
-## Context
+Action requested: "$ARGUMENTS". Blank means `validate`.
 
-This project uses custom AT Protocol lexicons located in `src/lexicons/*.json`. After modifying lexicons, they must be:
-1. Validated and linted
-2. Used to regenerate TypeScript types
-3. Fixed (due to generator bugs)
-4. Published to lexicon.garden
+- `validate` — parse and lint only.
+- `update` — validate, regenerate types, build.
+- `publish` — update, then publish to lexicon.garden.
 
-Full documentation is in `LEXICON_PUBLISHING.md` in the project root if it exists.
+## Before anything
 
-## Arguments
+1. **Find the lexicons.** Look for lexicon JSON (files with `"lexicon": 1`)
+   under `lexicons/` or `src/lexicons/`; otherwise search the repo. If more
+   than one candidate directory exists, ask which one.
+2. **Read the project's own docs.** If the project documents its lexicon
+   workflow (`LEXICON_PUBLISHING.md`, a README section, `package.json`
+   scripts), that wins over anything below.
 
-The command can be invoked with an action argument:
-- `/publish-lexicons` or `/publish-lexicons validate` — Just validate and lint (default)
-- `/publish-lexicons update` — Validate, regenerate types, fix bugs, and build
-- `/publish-lexicons publish` — Full flow including publishing to lexicon.garden
+## Phase 1 — Validate (always)
 
-## Your Workflow
+1. Parse each lexicon file, in parallel: `goat lex parse <file>`.
+2. Lint them together: `goat lex lint <dir>/*.json` (or the recursive set if
+   the lexicons are nested).
+3. Fix the common lint failures:
+   - Record key `"key": "self"` → `"key": "literal:self"`.
+   - Unbounded string fields → add `maxLength`.
+   - Missing `description` → ask the user what it should say; never invent one.
+4. Re-run parse and lint until clean.
 
-### Phase 1: Validation (Always Do This First)
+## Phase 2 — Regenerate types (`update` or `publish`)
 
-1. **Find lexicons** — glob for `src/lexicons/*.json` to discover all lexicon files
+1. Run the project's codegen script — find it in `package.json` scripts or the
+   project docs. If none exists, ask; don't guess at a generator invocation.
+2. **Never hand-edit the generated output.** If it doesn't build, the fix
+   belongs in the project's post-generation script (or in the codegen config),
+   not in the generated files. If no such script exists, stop and tell the user
+   what broke and where, so they can add one.
+3. Build or typecheck with the project's own command. It must pass before
+   publishing.
 
-2. **Parse all lexicons** — run in parallel:
-   ```
-   goat lex parse src/lexicons/<name>.json
-   ```
-   for each file found
+## Phase 3 — Publish (`publish` only)
 
-3. **Lint all lexicons**:
-   ```
-   goat lex lint src/lexicons/*.json
-   ```
+1. Check auth: `goat account status`. If not logged in, tell the user to run
+   `! goat account login`.
+2. Check the DNS authority record: a `_lexicon.<authority domain>` TXT record
+   must exist and contain the DID from `goat account status`. The authority
+   domain is the NSID's authority reversed (`com.example.foo` →
+   `example.com`). If it's missing, give the user the record to add and stop.
+3. **Confirm with the user before publishing.** Publishing is outward-facing.
+4. `goat lex publish <dir>`.
+5. Tell the user to check lexicon.garden for their namespace; each lexicon
+   should show an authority badge.
 
-4. **Fix common issues if found**:
-   - Invalid key specifier: Change `"key": "self"` to `"key": "literal:self"`
-   - Unlimited strings: Add `"maxLength"` to string fields
-   - Missing descriptions: Prompt user for clarification
+## Done means
 
-### Phase 2: TypeScript Type Generation (If `update` or `publish` arg, or user requests)
-
-5. **Regenerate types**:
-   ```
-   npm run gen-api
-   ```
-   (confirm with 'y' if prompted)
-
-6. **Fix generator bugs** (CRITICAL — must do after every gen-api run):
-
-   In `src/client/types/social/drydown/*.ts` (all generated type files):
-   ```typescript
-   // REMOVE these unused imports:
-   import { type ValidationResult, BlobRef } from '@atproto/lexicon'
-   import { CID } from 'multiformats/cid'
-   import { type $Typed, is$typed as _is$typed, type OmitKey } from '../../../util'
-
-   // KEEP only these:
-   import { validate as _validate } from '../../../lexicons'
-   import { is$typed as _is$typed } from '../../../util'
-   ```
-
-   In `src/client/index.ts`:
-   ```typescript
-   // ADD these imports:
-   import { schemas as bskySchemas } from '@atproto/api'
-
-   // REMOVE this import:
-   // import { CID } from 'multiformats/cid'
-
-   // FIX constructor — must spread both schema sets:
-   constructor(options: FetchHandler | FetchHandlerOptions) {
-     super(options, [...schemas, ...bskySchemas])  // NOT just schemas
-     this.social = new SocialNS(this)
-   }
-   ```
-
-   In `src/client/lexicons.ts`:
-   ```typescript
-   // REMOVE type $Typed from import:
-   import { is$typed, maybe$typed } from './util.js'
-   ```
-
-7. **Verify build**:
-   ```
-   npx tsc -b
-   ```
-   Must pass with no errors before proceeding.
-
-### Phase 3: Publishing (Only if `publish` arg or user explicitly requests)
-
-8. **Check authentication**:
-   ```
-   goat account status
-   ```
-   If not logged in, tell user to run `! goat account login` in the prompt.
-
-9. **Verify DNS configuration**:
-   - Check if a `_lexicon.<domain>` TXT record exists for the lexicon authority
-   - Should contain the user's DID from `goat account status`
-   - If missing, provide DNS setup instructions
-
-10. **Publish lexicons**:
-    ```
-    goat lex publish src/lexicons
-    ```
-
-11. **Verify publication**:
-    - Tell user to check https://lexicon.garden for their namespace
-    - Expect to see all lexicons with authority badges
-
-## Important Guidelines
-
-- **Run commands in parallel when possible** (parsing, linting, fixing imports)
-- **Always fix generator bugs** after running gen-api — this is NOT optional
-- **Don't publish without user confirmation** — ask before running publish command
-- **Be concise** — show progress but don't over-explain
-- **Handle errors gracefully** — if validation fails, help fix issues before proceeding
-
-## Success Criteria
-
-- All lexicons parse successfully
-- All lexicons lint cleanly
-- TypeScript types generated and fixed (if update/publish)
-- Build passes (`npx tsc -b` succeeds)
-- (If publishing) Lexicons appear on lexicon.garden with authority badges
+- Every lexicon parses and lints clean.
+- For `update`/`publish`: types regenerated with no hand edits, and the build
+  passes.
+- For `publish`: the user confirmed, and the lexicons are live.
