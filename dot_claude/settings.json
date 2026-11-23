@@ -98,12 +98,12 @@
     ]
   },
   "enabledPlugins": {
-    "commit-commands@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": false,
     "explanatory-output-style@claude-plugins-official": false,
-    "feature-dev@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": false,
     "learning-output-style@claude-plugins-official": false,
     "security-guidance@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": false
   },
   "autoMode": {
     "soft_deny": [
