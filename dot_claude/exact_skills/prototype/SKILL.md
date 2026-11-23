@@ -1,6 +1,7 @@
 ---
 name: prototype
 description: Build a throwaway prototype to flesh out a design before committing to it. Routes between three branches — a runnable terminal app for state and business-logic questions, several radically different UI variations toggleable from one route, or contrasting interface designs for a module. Use when the user wants to prototype, sanity-check a data model or state machine, mock up a UI, design a module interface, explore options, or says "prototype this", "let me play with it", "try a few designs".
+disable-model-invocation: true
 ---
 
 # Prototype
