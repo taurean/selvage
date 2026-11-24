@@ -21,7 +21,8 @@ Everything else stays out: how something was found, what was checked and found f
 Example:
 
 ```
-Merge `#42`: https://github.com/owner/repo/pull/42 (2 min)
+Merge `#42` (2 min):
+`https://github.com/owner/repo/pull/42`
 
 `chezmoi diff` now shows only the new alias; the nightly sync picks it up at 06:00.
 Not verified: the alias in a fresh shell, since no shell was started.
@@ -36,7 +37,7 @@ Not verified: the alias in a fresh shell, since no shell was started.
 - No list longer than five items. Group and rank; say that more exist when they do.
 - Identifiers go in inline code or on a line of their own, never bare inside a sentence: paths, commit hashes, branch names, pull request and issue numbers, URLs, commands, setting keys.
 - No "Insight", "Note", "Key takeaways", or other aside.
-- Before sending, read only the first and last lines. Together they must say what the user does next and what just happened.
+- Before sending, read only the first line and the state line. Together they must say what the user does next and what just happened.
 
 ## While working
 
