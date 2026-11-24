@@ -10,7 +10,7 @@
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
   "theme": "custom:flexoki",
-  "outputStyle": "Report First",
+  "outputStyle": "Next Action",
   "awaySummaryEnabled": false,
   "statusLine": {
     "type": "command",

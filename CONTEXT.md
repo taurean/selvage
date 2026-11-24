@@ -60,7 +60,7 @@ chezmoi apply                               # installs the Brewfile, then mise's
 
 **`~/.claude/themes/` is not exact.** `/theme` writes a custom theme there when one is created ("New custom theme…") or edited (Ctrl+E). An `exact_` directory would delete UI-made themes on the next apply. Editing `flexoki` in the UI drifts its target like `settings.json` does; `re-add` it to keep the change.
 
-**Symptom:** Claude Code uses the Default output style although `settings.json` names another. **Cause:** `outputStyle` matches the style's frontmatter `name` exactly and case-sensitively (`Report First`, not `report-first`); a mismatch falls back to Default without an error. **Fix:** copy the `name` value from the style's frontmatter.
+**Symptom:** Claude Code uses the Default output style although `settings.json` names another. **Cause:** `outputStyle` matches the style's frontmatter `name` exactly and case-sensitively (`Next Action`, not `next-action`); a mismatch falls back to Default without an error. **Fix:** copy the `name` value from the style's frontmatter.
 
 **Symptom:** in Flexoki Light, Claude Code's body text or `!` entries are unreadable. **Cause:** the `flexoki` theme's `dark-ansi` base draws text in `whiteBright` and the `!` entry background in `black` (read from the preset in Claude Code 2.1.314). Ghostty's bundled Flexoki Light has `whiteBright` near the background. **Fix:** keep `dot_config/ghostty/themes/flexoki-light` palette 15 as ink (`#100f0f`) and the theme's `bashMessageBackgroundColor` override. Both halves are needed; neither works alone.
 
