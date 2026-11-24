@@ -47,7 +47,9 @@
       "Read(//Users/taurean/.gnupg/**)",
       "Read(//**/*.env)",
       "Read(//**/*.env.*)",
-      "Read(//**/*.pem)",
+      "Read(//**/.dev.vars)",
+      "Read(//Users/**/*.pem)",
+      "Read(//Volumes/**/*.pem)",
       "Read(//**/*.key)",
       "Bash(rm -rf:*)",
       "Bash(sudo:*)",
@@ -58,7 +60,6 @@
       "Bash(git clean -f:*)"
     ],
     "allow": [
-      "Read(//**/*.env.example)",
       "WebFetch(domain:lexicon.garden)",
       "Bash(npx tsc:*)"
     ],
@@ -97,13 +98,65 @@
       "Bash(gh api --method:*)"
     ]
   },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "allowWrite": [
+        "~/Library/pnpm/store"
+      ],
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.config/stripe",
+        "~/.config/sanity",
+        "~/.claude/.credentials.json"
+      ],
+      "allowRead": [
+        "~/.ssh/known_hosts",
+        "~/.ssh/config",
+        "~/.ssh/taurean.pub"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "registry.npmjs.org",
+        "github.com",
+        "api.github.com",
+        "raw.githubusercontent.com",
+        "objects.githubusercontent.com",
+        "codeload.github.com",
+        "uploads.github.com"
+      ],
+      "allowLocalBinding": true,
+      "allowUnixSockets": [
+        "/Users/taurean/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+      ],
+      "allowMachLookup": [
+        "com.apple.trustd.agent",
+        "com.apple.SecurityServer"
+      ]
+    }
+  },
   "enabledPlugins": {
     "commit-commands@claude-plugins-official": false,
     "explanatory-output-style@claude-plugins-official": false,
     "feature-dev@claude-plugins-official": false,
     "learning-output-style@claude-plugins-official": false,
     "security-guidance@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": false
+    "swift-lsp@claude-plugins-official": false,
+    "suede-process@suede-home": true
+  },
+  "extraKnownMarketplaces": {
+    "suede-home": {
+      "source": {
+        "source": "github",
+        "repo": "taurean/suede-home"
+      },
+      "autoUpdate": true
+    }
   },
   "autoMode": {
     "soft_deny": [
