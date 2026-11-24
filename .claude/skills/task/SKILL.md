@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 Align → prep → build → verify → review → land.
 
-`engineering-discipline` is in effect from the first line of code to the last.
+`suede-process:engineering-discipline` is in effect from the first line of code to the last.
 Its stopping rules govern every interruption in this process; don't restate
 them here, follow them.
 
