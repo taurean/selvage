@@ -24,7 +24,6 @@ of polish fixes it.
   `/project-plan`, and `/suede-kickoff` are all this shape.
 - **Only the model should see it, and it isn't a meaningful thing to invoke** →
   skill with `user-invocable: false`. Background knowledge, not an action.
-  `suede-process:engineering-discipline` is this shape.
 - **It's a job that needs its own context** — reviewing a diff without seeing
   the conversation, writing a test without seeing the implementation → a
   subagent in `.claude/agents/<name>.md`, not a skill. The isolation is the
