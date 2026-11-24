@@ -1,3 +1,1 @@
-# Pin pnpm's store: under the sandbox its link test fails in ~/Library/pnpm and it silently starts an empty store elsewhere.
-store-dir=/Users/taurean/Library/pnpm/store
 //registry.npmjs.org/:_authToken=${NPM_TOKEN}
