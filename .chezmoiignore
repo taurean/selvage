@@ -3,8 +3,8 @@
 # deploy.
 *.md
 
-# Suede project files ([S11]). The manifest carries selvage's version and suede
-# lineage; `suede task` writes the lockfile and node_modules. None deploy;
+# Repo-only project files ([S11]). The manifest carries selvage's version; the
+# lockfile and node_modules come from running pnpm in the repo. None deploy;
 # without these lines they would land in ~/. Dot-prefixed source entries (.claude/, .github/) are skipped by
 # chezmoi on its own and need no entry here.
 package.json
