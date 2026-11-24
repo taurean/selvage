@@ -25,11 +25,11 @@ agent-config gotchas (the Symptom/Fix entries are the load-bearing ones), and
 
 - `dot_claude/` deploys to `~/.claude/` and applies in every project: the global
   `CLAUDE.md`, `settings.json`, and the personal skills, commands, and agents.
-- `.claude/` at the repo root is selvage's own project config. It holds no
-  process: that comes from the `suede-process` plugin. chezmoi skips
-  dot-prefixed source entries, so it never deploys; Claude Code loads it only
-  when cwd is selvage or one of its worktrees. A skill for every project goes
-  in `dot_claude/exact_skills/`.
+- `.claude/` at the repo root is selvage's own project config, with no process
+  (that is the `suede-process` plugin's). chezmoi skips dot-prefixed source
+  entries, so it never deploys; Claude Code loads it only when cwd is selvage
+  or a worktree of it. A skill for every project goes in
+  `dot_claude/exact_skills/`; a selvage-only one in `.claude/skills/`.
 
 ## Rules
 
@@ -122,7 +122,8 @@ repository, not the home directory, needs the same entry. Dot-prefixed entries
   deletes it.
 - [S8] Adding a `permissions` block to the root `.claude/settings.json` to
   scope selvage-specific rules. Wrong scope.
-- [S6] Adding a personal skill named `review`. It shadows every project's own.
+- [S6] A selvage-only `review` skill in `dot_claude/exact_skills/`: it shadows
+  every project's own. It belongs in `.claude/skills/`.
 
 ## Commit messages
 
@@ -161,8 +162,7 @@ From the checkout or worktree holding the change:
   (`*.md` at the root, `package.json`, `pnpm-lock.yaml`, anything under
   `.claude/` or `tmp/`).
 - `chezmoi --source . diff` — runs clean and shows only the intended changes.
-  A bare `chezmoi diff` in a worktree compares the main checkout, not the
-  branch.
+  A bare `chezmoi diff` in a worktree compares the main checkout instead.
 
 Both need `chezmoi`, which a cloud session lacks; a cloud worker lists them for
 the human under `## Asks` in the pull request. Anything observable only after
