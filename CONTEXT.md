@@ -50,7 +50,7 @@ chezmoi apply                               # installs the Brewfile, then mise's
 
 **A skill edit reaches Claude Code only after apply.** Claude Code re-scans the three directories mid-session, so once applied, a new or changed skill, command, or agent is available without a restart.
 
-**Skill name collisions: personal wins, project loses.** Claude Code resolves collisions enterprise > personal > project. A skill in selvage silently shadows a same-named skill in any project — the opposite of the intuitive precedence. This is why `review`, `task`, and `project-plan` live in suede and not here, and why `systems-map` lives here and not in suede. One home per name, decided deliberately.
+**Skill name collisions: personal wins, project loses.** Claude Code resolves collisions enterprise > personal > project. A skill in selvage silently shadows a same-named skill in any project — the opposite of the intuitive precedence. This is why `systems-map` lives here and not in suede. One home per name, decided deliberately.
 
 **`disable-model-invocation: true` makes a skill user-invoked only.** `deepen` and `teach` both carry it, so they do not appear in the model's available-skills list and only run via `/deepen` and `/teach`. Their absence from that list is correct, not a loading failure — check the frontmatter before diagnosing a "missing" skill.
 
@@ -70,9 +70,7 @@ chezmoi apply                               # installs the Brewfile, then mise's
 
 ## Suede process layer
 
-**Two `.claude` directories, two scopes.** `dot_claude/` is source for `~/.claude/` and applies everywhere. `.claude/` at the repo root is selvage's project config: the `task`, `project-plan`, and `review` skills and the three reviewer agents. chezmoi ignores source entries whose names start with `.` (other than `.chezmoi*`), so the root `.claude/` never deploys and needs no `.chezmoiignore` entry. Verified against chezmoi 2.65 on 2026-09-30.
-
-**Why the process skills are repo-local.** `review`, `task`, and `project-plan` are also the names of every suede project's skills. As personal skills they would shadow those in every project ([S6]). Repo-local, they apply only inside selvage and shadow nothing.
+**Two `.claude` directories, two scopes.** `dot_claude/` is source for `~/.claude/` and applies everywhere. `.claude/` at the repo root is selvage's project config; it holds no process (that comes from the `suede-process` plugin) and may be absent. chezmoi ignores source entries whose names start with `.` (other than `.chezmoi*`), so the root `.claude/` never deploys and needs no `.chezmoiignore` entry. Verified against chezmoi 2.65 on 2026-09-30.
 
 **`package.json` would deploy without its ignore entry.** It is not dot-prefixed, so chezmoi treats it as a target (`~/package.json`) unless `.chezmoiignore` lists it. The same goes for `pnpm-lock.yaml` and `node_modules`, which `suede task` produces by running `pnpm install` in each new worktree. The lockfile is committed so worktrees start clean.
 
