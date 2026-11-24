@@ -64,21 +64,10 @@
       "Bash(npx tsc:*)"
     ],
     "ask": [
-      "Bash(gh issue create:*)",
-      "Bash(gh issue edit:*)",
-      "Bash(gh issue comment:*)",
-      "Bash(gh issue close:*)",
-      "Bash(gh issue reopen:*)",
       "Bash(gh issue delete:*)",
       "Bash(gh issue lock:*)",
       "Bash(gh issue transfer:*)",
-      "Bash(gh pr create:*)",
-      "Bash(gh pr edit:*)",
-      "Bash(gh pr comment:*)",
       "Bash(gh pr merge:*)",
-      "Bash(gh pr review:*)",
-      "Bash(gh pr close:*)",
-      "Bash(gh pr reopen:*)",
       "Bash(gh pr lock:*)",
       "Bash(gh release create:*)",
       "Bash(gh release edit:*)",
@@ -161,7 +150,8 @@
   "autoMode": {
     "soft_deny": [
       "$defaults",
-      "Bash(git push origin main:*) — agents push branches and tags but never push directly to main; the human merges"
+      "Bash(git push origin main:*) — agents push branches and tags but never push directly to main; the human merges",
+      "gh commands that create, edit, comment on, close, merge, or delete anything in a repository not owned by taurean — writes to other people's repositories need the human"
     ]
   },
   "voice": {
