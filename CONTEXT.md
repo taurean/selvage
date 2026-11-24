@@ -104,6 +104,8 @@ The policy lives in `permissions` in `dot_claude/settings.json`. It was ported f
 
 **Permission `Read` denies carry into the sandbox.** A `Read(...)` deny also becomes a sandbox read block for Bash. `Read(//**/*.pem)` blocked `/etc/ssl/cert.pem`, so curl and git over https failed inside the sandbox with `error setting certificate verify locations`. The rule is now `Read(//Users/taurean/**/*.pem)`. Widen a `Read` deny knowing it also blinds every shell command.
 
+**`.env.example` is unreadable on purpose.** `Read(//**/*.env.*)` catches every env variant, `.env.example` included, for the Read tool and for sandboxed shell commands alike. An allow can't carve out of a deny, so the old `Read(//**/*.env.example)` allow never worked and was removed. An enumerated list of variants was tried and dropped: it leaves an oddly named file such as `.env.preview` readable, and exposing a secret outranks reading a template. `.dev.vars` (Cloudflare's local secrets file) is denied too.
+
 **`CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` stays off.** Setting it forces the permission mode to `default`, which overrides `defaultMode: auto`; in `-p` every command then needs an explicit `--allowedTools`. It removed only `SSH_AUTH_SOCK` and Claude Code's own messaging token here, since no credential lives in the environment.
 
 **Pi's `external_directory` allow-list has no analog and was dropped.** Claude Code governs out-of-cwd file access via `additionalDirectories`, not a path allow-list, and `defaultMode: auto` already covers the intent. The Pi entries (`~/Developer`, `~/.config`, `~/.local`, `/var/folders/*`) are not reproduced.
