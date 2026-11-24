@@ -59,12 +59,9 @@ parts.
 
 ## How work on selvage runs
 
-Selvage is a [suede](https://github.com/taurean/suede) project with no runtime
-stack: it uses suede's process layer (task pipeline, git workflow, semver
-releases) to manage its own changes. The process skills and
-reviewer agents live in `.claude/` at the repo root. They load only when Claude
-Code runs inside selvage and never deploy to `~/.claude`. `CLAUDE.md` has the
-rules.
+Work on selvage follows the process from the `suede-process` plugin, which
+`dot_claude/settings.json` enables; the repository carries no process files of
+its own. `CLAUDE.md` has the rules specific to this repository.
 
 ## Credits
 
