@@ -1,6 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "model": "opus",
+  "env": {
+    "npm_config_store_dir": "/Users/taurean/Library/pnpm/store"
+  },
   "alwaysThinkingEnabled": true,
   "effortLevel": "low",
   "promptSuggestionEnabled": false,
