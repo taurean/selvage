@@ -81,7 +81,7 @@ only.
 | `spec-reviewer`       | diff command, commit list, spec path or fetched contents |
 | `discipline-reviewer` | diff command, commit list                                |
 
-`discipline-reviewer` loads the `engineering-discipline` skill itself — don't
+`discipline-reviewer` loads the `suede-process:engineering-discipline` skill itself — don't
 paste rules into its message.
 
 Pass nothing beyond the table. No summary of the change, no hint about what you

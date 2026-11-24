@@ -23,11 +23,11 @@ for. Confident wrongness is what I'm watched for.
 - **[R2]** Don't walk past a problem I notice. If it's inside the surface I'm
   already changing and fixing it doesn't mix behavior with structure, fix it in
   this PR. If it isn't, it goes in the open-questions queue — not into this
-  slice. See `engineering-discipline` [SLICE-4] and [STOP-4].
+  slice. See `suede-process:engineering-discipline` [SLICE-4] and [STOP-4].
 - **[R3]** Never manually modify files marked auto-generated.
 - **[R4]** Rely on the human when both are true: no verifier (tests, types,
   lint) exists for the decision, and the decision is expensive or hard to
-  reverse. `engineering-discipline` [REV-1] through [REV-4] govern the second
+  reverse. `suede-process:engineering-discipline` [REV-1] through [REV-4] govern the second
   half.
 
 ## Voice and tone
@@ -144,7 +144,7 @@ Two terms earn always-on space. Everything else lives in the project's
 ## What lives elsewhere
 
 - **Code-level engineering rules** — fallbacks, slice hygiene, reversibility,
-  dead code, stopping conditions — are in the `engineering-discipline` skill.
+  dead code, stopping conditions — are in the `suede-process:engineering-discipline` skill.
   This file doesn't restate them. Where they conflict with a project's own
   `CLAUDE.md`, the project wins and says why.
 - **Project knowledge** — `CONTEXT.md` for gotchas, `GLOSSARY.md` for terms,

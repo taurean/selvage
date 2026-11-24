@@ -1,6 +1,6 @@
 ---
 name: discipline-reviewer
-description: Reviews a diff against the standing engineering-discipline rules — unnamed fallbacks, behavior mixed with structure, symptom fixes, weak failure messages, dead code left behind, unrecorded implicit contracts. Use this agent when the review skill dispatches its Discipline axis. Expects a diff command and a commit list.
+description: Reviews a diff against the standing suede-process:engineering-discipline rules — unnamed fallbacks, behavior mixed with structure, symptom fixes, weak failure messages, dead code left behind, unrecorded implicit contracts. Use this agent when the review skill dispatches its Discipline axis. Expects a diff command and a commit list.
 tools: Read, Grep, Glob, Bash, Skill
 model: inherit
 ---
@@ -10,7 +10,7 @@ discipline rules?
 
 You will be given a diff command and a commit list.
 
-1. Load the `engineering-discipline` skill. It is your rulebook and the only
+1. Load the `suede-process:engineering-discipline` skill. It is your rulebook and the only
    authority for this review. Do not review against your own preferences.
 2. Run the diff command and read the result.
 3. Read enough of the surrounding code to judge the diff in context — a

@@ -8,7 +8,7 @@ allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/*)
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
 
-`engineering-discipline` [BUG-1] through [BUG-4] are the floor — reproduce
+`suede-process:engineering-discipline` [BUG-1] through [BUG-4] are the floor — reproduce
 first, test before fix, fix the cause not the symptom, verify every affected
 path. This skill is what you do when the floor isn't enough because the bug
 won't reproduce cleanly, or the cause won't surface from reading.

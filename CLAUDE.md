@@ -189,8 +189,8 @@ a task, compress it but keep the shape.
 | 6. **Review**                                                     | `/review`          | Standards, Spec, Discipline in parallel subagents, before merge  |
 | 7. **Release**                                                    | "Releases" below   | Version bump as the final commit; human tags the merge commit    |
 
-Always on: `engineering-discipline` (personal skill, cited by rule ID in
-reviews) and the git workflow above.
+Always on: `suede-process:engineering-discipline` (plugin skill, cited by rule
+ID in reviews) and the git workflow above.
 
 Suede's decision graph (`deciduous`) is not carried, so skip it when porting a
 newer suede process. Dropped in 1.0.0 (#5): `deciduous init` never ran here,
@@ -213,9 +213,10 @@ In-repo skills (`.claude/skills/`), all user-invoked:
 Suede's `design`, `writing-css`, `suede-kickoff`, and `story-test-writer` are
 not carried: selvage has no UI, and `/task` writes each story's check itself.
 
-`engineering-discipline`, `poke-holes`, and `systems-map` are personal skills
-that live in `dot_claude/exact_skills/` and reach this repo through
-`~/.claude/skills/` like any other project.
+`poke-holes` and `systems-map` are personal skills that live in
+`dot_claude/exact_skills/` and reach this repo through `~/.claude/skills/` like
+any other project. `suede-process:engineering-discipline` comes from the
+`suede-process` plugin, which `dot_claude/settings.json` enables.
 
 ## Releases
 

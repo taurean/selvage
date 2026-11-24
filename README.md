@@ -32,9 +32,9 @@ checkout, never a task worktree.
 The skills in `dot_claude/exact_skills/` work without the rest of this repo.
 Copy a skill's folder into `~/.claude/skills/<name>/` (drop the `exact_` prefix
 from the path; it is a chezmoi convention). Projects built from
-[suede](https://github.com/taurean/suede) expect these three:
+[suede](https://github.com/taurean/suede) expect these two, plus `suede-process:engineering-discipline`, which ships in
+the `suede-process` plugin rather than here:
 
-- [`engineering-discipline`](dot_claude/exact_skills/engineering-discipline)
 - [`poke-holes`](dot_claude/exact_skills/poke-holes)
 - [`systems-map`](dot_claude/exact_skills/systems-map)
 

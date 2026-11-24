@@ -24,7 +24,6 @@ of polish fixes it.
   `/project-plan`, and `/suede-kickoff` are all this shape.
 - **Only the model should see it, and it isn't a meaningful thing to invoke** →
   skill with `user-invocable: false`. Background knowledge, not an action.
-  `engineering-discipline` is this shape.
 - **It's a job that needs its own context** — reviewing a diff without seeing
   the conversation, writing a test without seeing the implementation → a
   subagent in `.claude/agents/<name>.md`, not a skill. The isolation is the
@@ -133,7 +132,7 @@ invoked.
   `allowed-tools` so it runs without a prompt.
 - No time-sensitive facts. Nothing derivable from the code it sits next to.
 - **Cite rules rather than restating them.** When a rule lives in
-  `engineering-discipline`, reference its ID. Two copies drift, and the reviewer
+  `suede-process:engineering-discipline`, reference its ID. Two copies drift, and the reviewer
   agents cite IDs.
 - When requirements are unclear, ask one question at a time — the single unknown
   that most changes the shape.
@@ -173,5 +172,5 @@ For each existing skill or agent, in order:
       anything is moved or renamed.
 - [ ] Directory name correct, and not colliding with a project skill it would
       silently shadow?
-- [ ] Rules cited rather than duplicated from `engineering-discipline` or
+- [ ] Rules cited rather than duplicated from `suede-process:engineering-discipline` or
       `CLAUDE.md`?
