@@ -1,6 +1,6 @@
 {
 	"name": "selvage",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"private": true,
 	"description": "Personal dotfiles and Claude Code configuration, managed with chezmoi",
 	"suede": {
