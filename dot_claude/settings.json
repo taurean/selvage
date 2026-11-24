@@ -46,8 +46,14 @@
       "Read(//Users/taurean/.aws/credentials)",
       "Read(//Users/taurean/.gnupg/**)",
       "Read(//**/*.env)",
-      "Read(//**/*.env.*)",
-      "Read(//**/*.pem)",
+      "Read(//**/*.env.local)",
+      "Read(//**/*.env.*.local)",
+      "Read(//**/*.env.development)",
+      "Read(//**/*.env.production)",
+      "Read(//**/*.env.staging)",
+      "Read(//**/*.env.test)",
+      "Read(//**/.dev.vars)",
+      "Read(//Users/taurean/**/*.pem)",
       "Read(//**/*.key)",
       "Bash(rm -rf:*)",
       "Bash(sudo:*)",
@@ -58,7 +64,6 @@
       "Bash(git clean -f:*)"
     ],
     "allow": [
-      "Read(//**/*.env.example)",
       "WebFetch(domain:lexicon.garden)",
       "Bash(npx tsc:*)"
     ],
@@ -96,6 +101,48 @@
       "Bash(gh api -X:*)",
       "Bash(gh api --method:*)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "allowWrite": [
+        "~/Library/pnpm/store"
+      ],
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.config/stripe",
+        "~/.config/sanity",
+        "~/.claude/.credentials.json"
+      ],
+      "allowRead": [
+        "~/.ssh/known_hosts",
+        "~/.ssh/config",
+        "~/.ssh/taurean.pub"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "registry.npmjs.org",
+        "github.com",
+        "api.github.com",
+        "raw.githubusercontent.com",
+        "objects.githubusercontent.com",
+        "codeload.github.com",
+        "uploads.github.com"
+      ],
+      "allowLocalBinding": true,
+      "allowUnixSockets": [
+        "/Users/taurean/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+      ],
+      "allowMachLookup": [
+        "com.apple.trustd.agent",
+        "com.apple.SecurityServer"
+      ]
+    }
   },
   "enabledPlugins": {
     "commit-commands@claude-plugins-official": false,
