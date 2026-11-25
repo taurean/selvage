@@ -96,7 +96,9 @@
     "allowUnsandboxedCommands": false,
     "filesystem": {
       "allowWrite": [
-        "~/Library/pnpm/store"
+        "~/Library/pnpm/store",
+        "~/Library/Preferences/.wrangler/logs",
+        "~/Library/Preferences/.wrangler/registry"
       ],
       "denyRead": [
         "~/.ssh",
@@ -104,7 +106,8 @@
         "~/.gnupg",
         "~/.config/stripe",
         "~/.config/sanity",
-        "~/.claude/.credentials.json"
+        "~/.claude/.credentials.json",
+        "~/Library/Preferences/.wrangler/config"
       ],
       "allowRead": [
         "~/.ssh/known_hosts",
