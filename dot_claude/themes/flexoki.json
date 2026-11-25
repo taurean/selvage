@@ -1,7 +1,0 @@
-{
-  "name": "Flexoki (ANSI)",
-  "base": "dark-ansi",
-  "overrides": {
-    "bashMessageBackgroundColor": "ansi:blackBright"
-  }
-}
