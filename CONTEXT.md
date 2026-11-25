@@ -146,6 +146,8 @@ The Pi permission package had several tokenizer-level gotchas (path tokens extra
 
 **Symptom:** `ERR_PNPM_STORE_DIR_OPEN_OPERATION_LOCK ... Operation not permitted` under the sandbox, even with the store pinned. **Cause:** not found. It happens with pnpm 11, mise's global, which runs wherever a project pins no pnpm version. **Fix:** none yet. Projects that pin pnpm 10 through `packageManager` are unaffected.
 
+**Symptom:** a Cloudflare project's `pnpm dev` fails with `EPERM` under the sandbox. **Cause:** wrangler's local runner writes under `~/Library/Preferences/.wrangler`, and the sandbox allowed no writes there. A full run created files only in `logs` and `registry` (observed 2026-11-24). **Fix:** `dot_claude/settings.json` adds those two subfolders, not the whole folder, to `sandbox.filesystem.allowWrite`. The folder also holds `config/default.toml`, wrangler's Cloudflare login, which a sandboxed command could read; `config` is now in `denyRead`. `pnpm dev` starts and serves pages with `config` unreadable, so local development does not need the login. **A sandboxed session can no longer run a wrangler command that needs the login, such as a deploy. This is intended**; run those outside Claude Code. Post-merge check, after `chezmoi apply`, in a new sandboxed session: `pnpm dev` starts in a Cloudflare project with no workaround, and reading `~/Library/Preferences/.wrangler/config/default.toml` is refused.
+
 ---
 
 ## Secrets
