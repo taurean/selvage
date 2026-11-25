@@ -42,12 +42,6 @@ chezmoi apply                               # installs the Brewfile, then mise's
 
 ---
 
-## Claude Code
-
-**Selvage deploys nothing to `~/.claude`.** Claude Code runs on its defaults while a new setup is built. Selvage's earlier config (settings, permission policy, sandbox, skills, commands, theme, status line, plugin install script) is in git history before `chore(claude): reset to default Claude Code`.
-
----
-
 ## Repository layout
 
 **`package.json` would deploy without its ignore entry.** It is not dot-prefixed, so chezmoi treats it as a target (`~/package.json`) unless `.chezmoiignore` lists it. The same goes for `pnpm-lock.yaml` and `node_modules`, which `suede task` produces by running `pnpm install` in each new worktree. The lockfile is committed so worktrees start clean.
