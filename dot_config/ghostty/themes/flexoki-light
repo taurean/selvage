@@ -1,8 +1,7 @@
 # Flexoki Light, from Ghostty's bundled theme set (iTerm2-Color-Schemes), with
 # one change: palette 15 (whiteBright) is Flexoki ink instead of base-200.
-# Claude Code's dark-ansi preset, the base of ~/.claude/themes/flexoki.json,
-# draws body text in whiteBright; with the stock value it is unreadable on the
-# light background.
+# Apps that draw body text in whiteBright are unreadable on the light background
+# with the stock value.
 palette = 0=#100f0f
 palette = 1=#af3029
 palette = 2=#66800b
